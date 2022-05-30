@@ -46,6 +46,7 @@ import { defineComponent, ref } from 'vue'
 import { login } from '../api/user'
 import { useUserStore } from 'stores/user-store'
 import { useRouter } from 'vue-router'
+import { successNotify } from '../utils/notify'
 
 export default defineComponent({
   name: 'IndexPage',
@@ -60,6 +61,11 @@ export default defineComponent({
       const userInfo = data.data
       store.save(userInfo.id, userInfo.username, userInfo.token)
       // 登录成功后跳转
+      successNotify('登录成功，即将跳转到主界面', {
+        onDismiss: () => {
+          router.push('/')
+        }
+      })
     }
 
     const onRegister = () => {

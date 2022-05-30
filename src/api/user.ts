@@ -13,7 +13,7 @@ const register = (username: string, password: string) => {
 }
 
 const login = (username: string, password: string) => {
-  return api.post<RequestResponse<UserInfo>>('/user/register', qs.stringify({ username, password }))
+  return api.post<RequestResponse<UserInfo>>('/user/login', qs.stringify({ username, password }))
 }
 
 export { register, login }
