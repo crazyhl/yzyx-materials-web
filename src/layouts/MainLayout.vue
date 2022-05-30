@@ -12,10 +12,20 @@
         />
 
         <q-toolbar-title>
-          Quasar App
+          有知有行黑板报小工具
         </q-toolbar-title>
 
-        <div>Quasar v{{ $q.version }}</div>
+        <div>
+          <q-btn-dropdown flat text-color="white" :label="store.username">
+            <q-list>
+              <q-item clickable v-close-popup @click="onItemClick">
+                <q-item-section>
+                  <q-item-label>退出</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-btn-dropdown>
+        </div>
       </q-toolbar>
     </q-header>
 
@@ -48,6 +58,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import EssentialLink from 'components/EssentialLink.vue'
+import { useUserStore } from 'src/stores/user-store'
 
 const linksList = [
   {
@@ -103,13 +114,14 @@ export default defineComponent({
 
   setup () {
     const leftDrawerOpen = ref(false)
-
+    const store = useUserStore()
     return {
       essentialLinks: linksList,
       leftDrawerOpen,
       toggleLeftDrawer () {
         leftDrawerOpen.value = !leftDrawerOpen.value
-      }
+      },
+      store
     }
   }
 })
