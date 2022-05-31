@@ -12,6 +12,7 @@
         row-key="name"
         hide-header
         :loading="accountListLoading"
+        :rows-per-page-options="[10]"
       >
       </q-table>
     </div>
