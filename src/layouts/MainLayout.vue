@@ -18,7 +18,7 @@
         <div>
           <q-btn-dropdown flat text-color="white" :label="store.username">
             <q-list>
-              <q-item clickable v-close-popup @click="onItemClick">
+              <q-item clickable v-close-popup @click="onLogout">
                 <q-item-section>
                   <q-item-label>退出</q-item-label>
                 </q-item-section>
@@ -35,12 +35,6 @@
       bordered
     >
       <q-list>
-        <q-item-label
-          header
-        >
-          Essential Links
-        </q-item-label>
-
         <EssentialLink
           v-for="link in essentialLinks"
           :key="link.title"
@@ -59,6 +53,7 @@
 import { defineComponent, ref } from 'vue'
 import EssentialLink from 'components/EssentialLink.vue'
 import { useUserStore } from 'src/stores/user-store'
+import { useRouter } from 'vue-router'
 
 const linksList = [
   {
@@ -88,13 +83,20 @@ export default defineComponent({
   setup () {
     const leftDrawerOpen = ref(false)
     const store = useUserStore()
+    const router = useRouter()
+    const onLogout = () => {
+      store.clear()
+      router.push('/login')
+    }
+
     return {
       essentialLinks: linksList,
       leftDrawerOpen,
       toggleLeftDrawer () {
         leftDrawerOpen.value = !leftDrawerOpen.value
       },
-      store
+      store,
+      onLogout
     }
   }
 })

@@ -22,6 +22,13 @@ export const useUserStore = defineStore('userLogin', {
         username,
         token
       }))
+    },
+    // 清除用户信息，就是退出了
+    clear () {
+      localStorage.removeItem('userInfo')
+      this.id = 0
+      this.username = ''
+      this.token = ''
     }
   }
 })

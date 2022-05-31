@@ -14,11 +14,18 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
-    children: [{
-      path: '',
-      component: () => import('pages/IndexPage.vue'),
-      meta: { requiresAuth: true }
-    }]
+    children: [
+      {
+        path: '/',
+        component: () => import('pages/IndexPage.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: '/account/list',
+        component: () => import('pages/AccountListPage.vue'),
+        meta: { requiresAuth: true }
+      }
+    ]
   },
 
   // Always leave this as last one,

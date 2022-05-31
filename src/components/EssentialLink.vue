@@ -1,7 +1,7 @@
 <template>
   <q-item
     clickable
-    tag="a"
+    v-ripple
     :to="link"
   >
     <q-item-section
