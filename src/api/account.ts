@@ -28,8 +28,13 @@ const addAccount = (account: AddAccount) => {
   return api.post<RequestResponse<Account>>('/account/add', qs.stringify(account))
 }
 
+export interface AccountList {
+  data: Account[];
+  count: number;
+}
+
 const accountList = (page: number) => {
-  return api.get<RequestResponse<Account[]>>('/account/list?p=' + page)
+  return api.get<RequestResponse<AccountList>>('/account/list?p=' + page)
 }
 
 export { addAccount, accountList }

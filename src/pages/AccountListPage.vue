@@ -12,7 +12,9 @@
         row-key="name"
         hide-header
         :loading="accountListLoading"
+        v-model:pagination="tablePagination"
         :rows-per-page-options="[10]"
+        @request="getList"
       >
       </q-table>
     </div>
@@ -41,7 +43,7 @@
 
 <script lang="ts">
 import { successNotify } from 'src/utils/notify'
-import { defineComponent, ref, reactive } from 'vue'
+import { defineComponent, ref, reactive, onMounted } from 'vue'
 import { AddAccount, addAccount, Account, accountList } from '../api/account'
 import dayjs from 'dayjs'
 
@@ -58,7 +60,7 @@ export default defineComponent({
       expect_total_money: 0
     })
     const accountListData = ref<Account[]>([])
-    const accountListLoading = ref(true)
+    const accountListLoading = ref(false)
 
     const onAddAccount = () => {
       const data = addAccount(addAccountForm)
@@ -85,21 +87,41 @@ export default defineComponent({
       { name: 'create_at', label: '创建时间', field: 'create_at', format: (val: number) => { return dayjs.unix(val).format('YYYY-MM-DD') }, sortable: false },
       { name: 'update_at', label: '更新时间', field: 'update_at', format: (val: number) => { return dayjs.unix(val).format('YYYY-MM-DD') }, sortable: false }
     ]
-
-    const getList = async (page: number) => {
+    const tablePagination = ref({
+      sortBy: 'id',
+      descending: false,
+      page: 1,
+      rowsPerPage: 3,
+      rowsNumber: 0
+    })
+    const getList = async (props: any) => {
+      accountListLoading.value = true
+      const { page } = props.pagination
       const { data } = await accountList(page)
+      console.log('page', page, data.data.count)
       accountListLoading.value = false
-      console.log(data)
-      accountListData.value = data.data
+      accountListData.value = data.data.data
+      // 更新分页数据
+      tablePagination.value.rowsNumber = data.data.count
+      tablePagination.value.page = page
     }
-    getList(1)
+
+    onMounted(() => {
+      // get initial data from server (1st page)
+      getList({
+        pagination: tablePagination.value
+      })
+    })
+
     return {
       showAddAccountDialog,
       addAccountForm,
       onAddAccount,
       accountListData,
       accountListLoading,
-      columns
+      columns,
+      tablePagination,
+      getList
     }
   }
 })
