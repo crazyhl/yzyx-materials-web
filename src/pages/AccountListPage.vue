@@ -44,8 +44,6 @@ import { successNotify } from 'src/utils/notify'
 import { defineComponent, ref, reactive } from 'vue'
 import { AddAccount, addAccount, Account, accountList } from '../api/account'
 import dayjs from 'dayjs'
-import { RequestResponse } from '../api/response'
-import { AxiosResponse } from 'axios'
 
 export default defineComponent({
   name: 'AccountListPage',
