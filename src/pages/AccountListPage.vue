@@ -88,12 +88,11 @@ export default defineComponent({
       { name: 'update_at', label: '更新时间', field: 'update_at', format: (val: number) => { return dayjs.unix(val).format('YYYY-MM-DD') }, sortable: false }
     ]
     const tablePagination = ref({
-      sortBy: 'id',
-      descending: false,
       page: 1,
       rowsPerPage: 3,
       rowsNumber: 0
     })
+
     const getList = async (props: any) => {
       accountListLoading.value = true
       const { page } = props.pagination
