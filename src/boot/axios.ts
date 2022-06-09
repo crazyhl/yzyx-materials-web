@@ -16,7 +16,7 @@ declare module '@vue/runtime-core' {
 // "export default () => {}" function below (which runs individually
 // for each client)
 
-const baseUrl = process.env.NODE_ENV === 'production' ? 'https://backend:8080' : 'http://127.0.0.1:8080'
+const baseUrl = process.env.NODE_ENV === 'production' ? 'https://materials-api.cimple.ink/' : 'http://127.0.0.1:8080'
 const api = axios.create({ baseURL: baseUrl })
 const userStore = useUserStore()
 
