@@ -66,14 +66,22 @@ export default defineComponent({
       const data = addAccount(addAccountForm)
       console.log('data', data)
       // 添加成功后弹出对话框，并且把数据追加到列表头部
-      successNotify('添加成功', {})
-      // 追加到列表头部
-      // 添加后重置数据
-      addAccountForm.name = ''
-      addAccountForm.description = ''
-      addAccountForm.expect_rate_of_return = 0
-      addAccountForm.per_part_money = 0
-      addAccountForm.expect_total_money = 0
+      successNotify('添加成功', {
+        onDismiss: () => {
+          // 追加到列表头部
+          // 添加后重置数据
+          addAccountForm.name = ''
+          addAccountForm.description = ''
+          addAccountForm.expect_rate_of_return = 0
+          addAccountForm.per_part_money = 0
+          addAccountForm.expect_total_money = 0
+
+          tablePagination.value.page = 1
+          getList({
+            pagination: tablePagination.value
+          })
+        }
+      })
     }
 
     const columns = [
@@ -97,12 +105,12 @@ export default defineComponent({
       accountListLoading.value = true
       const { page } = props.pagination
       const { data } = await accountList(page)
-      console.log('page', page, data.data.count)
       accountListLoading.value = false
       accountListData.value = data.data.data
       // 更新分页数据
       tablePagination.value.rowsNumber = data.data.count
       tablePagination.value.page = page
+      console.log(tablePagination.value)
     }
 
     onMounted(() => {
