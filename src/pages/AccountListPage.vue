@@ -6,7 +6,7 @@
     <div class="q-pa-md">
       <q-table
         grid
-        title="列表"
+        title="账户列表"
         :rows="accountListData"
         :columns="columns"
         row-key="name"
