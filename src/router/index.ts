@@ -16,6 +16,7 @@ import routes from './routes'
  * with the Router instance.
  */
 
+let router = null
 export default route(function (/* { store, ssrContext } */) {
   // const createHistory = process.env.SERVER
   // ? createMemoryHistory
@@ -42,6 +43,8 @@ export default route(function (/* { store, ssrContext } */) {
       }
     }
   })
-
+  router = Router
   return Router
 })
+
+export { router }

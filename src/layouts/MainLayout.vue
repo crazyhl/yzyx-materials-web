@@ -52,8 +52,8 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import EssentialLink from 'components/EssentialLink.vue'
+import { logout } from 'src/api/user'
 import { useUserStore } from 'src/stores/user-store'
-import { useRouter } from 'vue-router'
 
 const linksList = [
   {
@@ -83,10 +83,8 @@ export default defineComponent({
   setup () {
     const leftDrawerOpen = ref(false)
     const store = useUserStore()
-    const router = useRouter()
     const onLogout = () => {
-      store.clear()
-      router.push('/login')
+      logout()
     }
 
     return {

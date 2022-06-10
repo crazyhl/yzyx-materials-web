@@ -2,7 +2,8 @@ import { boot } from 'quasar/wrappers'
 import axios, { AxiosInstance } from 'axios'
 import { errorNotify } from 'src/utils/notify'
 import { useUserStore } from '../stores/user-store'
-
+import { router } from 'src/router'
+import { logout } from 'src/api/user'
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
     $axios: AxiosInstance;
@@ -41,7 +42,14 @@ api.interceptors.response.use(function (response) {
   // 超出 2xx 范围的状态码都会触发该函数。
   // 对响应错误做点什么
   // 提示错误信息
-  errorNotify(error.response.data.message, {})
+  errorNotify(error.response.data.message, {
+    onDismiss: () => {
+      if (error.response.status === 401) {
+        logout()
+      }
+    }
+  })
+
   return Promise.reject(error)
 })
 
