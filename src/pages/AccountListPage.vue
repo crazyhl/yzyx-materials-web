@@ -16,6 +16,27 @@
         :rows-per-page-options="[10]"
         @request="getList"
       >
+        <template v-slot:item="props">
+          <q-card class="q-mx-xs">
+            <q-list dense>
+              <q-item v-for="col in props.cols" :key="col.name">
+                <div v-if="col.name=='action'" class="q-pa-sm">
+                  <q-btn>编辑{{col.value}}</q-btn>&nbsp;&nbsp;
+                  <q-btn color="red-7">删除{{col.value}}</q-btn>&nbsp;&nbsp;
+                  <q-btn color="red-7">删除{{col.value}}</q-btn>
+                </div>
+                <template v-else>
+                  <q-item-section>
+                    <q-item-label>{{ col.label }}</q-item-label>
+                  </q-item-section>
+                  <q-item-section side>
+                    <q-item-label caption>{{ col.value }}</q-item-label>
+                  </q-item-section>
+                </template>
+              </q-item>
+            </q-list>
+          </q-card>
+        </template>
       </q-table>
     </div>
   </q-page>
@@ -93,7 +114,13 @@ export default defineComponent({
       { name: 'expect_rate_of_return', label: '预期收益率', field: 'expect_rate_of_return', sortable: false },
       { name: 'profit_amount', label: '收益金额', field: 'profit_amount', sortable: false },
       { name: 'create_at', label: '创建时间', field: 'create_at', format: (val: number) => { return dayjs.unix(val).format('YYYY-MM-DD') }, sortable: false },
-      { name: 'update_at', label: '更新时间', field: 'update_at', format: (val: number) => { return dayjs.unix(val).format('YYYY-MM-DD') }, sortable: false }
+      { name: 'update_at', label: '更新时间', field: 'update_at', format: (val: number) => { return dayjs.unix(val).format('YYYY-MM-DD') }, sortable: false },
+      {
+        name: 'action',
+        label: '操作',
+        field: (row: Account) => row.id,
+        sortable: false
+      }
     ]
     const tablePagination = ref({
       page: 1,

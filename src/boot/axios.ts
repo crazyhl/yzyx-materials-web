@@ -2,7 +2,6 @@ import { boot } from 'quasar/wrappers'
 import axios, { AxiosInstance } from 'axios'
 import { errorNotify } from 'src/utils/notify'
 import { useUserStore } from '../stores/user-store'
-import { router } from 'src/router'
 import { logout } from 'src/api/user'
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
