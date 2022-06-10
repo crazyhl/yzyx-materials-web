@@ -59,7 +59,7 @@ const linksList = [
   {
     title: '概览',
     icon: 'fa-solid fa-gauge-high',
-    link: '/'
+    link: '/index'
   },
   {
     title: '账户管理',

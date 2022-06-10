@@ -63,7 +63,7 @@ export default defineComponent({
       // 注册成功后跳转
       successNotify('注册成功，即将跳转到主界面', {
         onDismiss: () => {
-          router.push('/')
+          router.push('/index')
         }
       })
     }
