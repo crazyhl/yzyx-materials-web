@@ -21,9 +21,8 @@
             <q-list dense>
               <q-item v-for="col in props.cols" :key="col.name">
                 <div v-if="col.name=='action'" class="q-pa-sm">
-                  <q-btn>编辑{{col.value}}</q-btn>&nbsp;&nbsp;
-                  <q-btn color="red-7">删除{{col.value}}</q-btn>&nbsp;&nbsp;
-                  <q-btn color="red-7">删除{{col.value}}</q-btn>
+                  <q-btn>编辑{{col.value.id}}</q-btn>&nbsp;&nbsp;
+                  <q-btn color="red-7">删除{{col.value.id}}</q-btn>&nbsp;&nbsp;
                 </div>
                 <template v-else>
                   <q-item-section>
@@ -60,6 +59,26 @@
       </q-card-actions>
     </q-card>
   </q-dialog>
+  <q-dialog v-model="showEditAccountDialog" persistent>
+    <q-card style="min-width: 500px">
+      <q-card-section>
+        <div class="text-h6">编辑账户</div>
+      </q-card-section>
+
+      <q-card-section class="q-pt-none">
+        <q-input autofocus label="名称" v-model="addAccountForm.name" />
+        <q-input label="描述" type="textarea" v-model="addAccountForm.description" autogrow/>
+        <q-input label="预期投入总金额" type="number" v-model.number="addAccountForm.expect_total_money" />
+        <q-input label="预期每份金额" type="number" v-model.number="addAccountForm.per_part_money" />
+        <q-input label="预期收益率" type="number" v-model.number="addAccountForm.expect_rate_of_return" />
+      </q-card-section>
+
+      <q-card-actions align="right" class="text-primary">
+        <q-btn flat label="取消" v-close-popup />
+        <q-btn flat label="添加" @click="onAddAccount" v-close-popup />
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
 </template>
 
 <script lang="ts">
@@ -73,6 +92,7 @@ export default defineComponent({
   components: { },
   setup () {
     const showAddAccountDialog = ref(false)
+    const showEditAccountDialog = ref(false)
     const addAccountForm = reactive<AddAccount>({
       name: '',
       description: '',
@@ -118,17 +138,19 @@ export default defineComponent({
       {
         name: 'action',
         label: '操作',
-        field: (row: Account) => row.id,
+        field: (row: Account) => row,
         sortable: false
       }
     ]
     const tablePagination = ref({
       page: 1,
-      rowsPerPage: 3,
-      rowsNumber: 0
+      rowsPerPage: 10,
+      rowsNumber: 0,
+      sortBy: 'id',
+      descending: false
     })
 
-    const getList = async (props: any) => {
+    const getList = async (props: {pagination: {sortBy: string, descending: boolean, page: number, rowsPerPage: number }}) => {
       accountListLoading.value = true
       const { page } = props.pagination
       const { data } = await accountList(page)
@@ -137,7 +159,6 @@ export default defineComponent({
       // 更新分页数据
       tablePagination.value.rowsNumber = data.data.count
       tablePagination.value.page = page
-      console.log(tablePagination.value)
     }
 
     onMounted(() => {
@@ -155,7 +176,8 @@ export default defineComponent({
       accountListLoading,
       columns,
       tablePagination,
-      getList
+      getList,
+      showEditAccountDialog
     }
   }
 })
