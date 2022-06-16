@@ -33,12 +33,19 @@ export interface Account {
   profit_amount: number;
 }
 
-const addAccount = async (account: AddAccountForm) => {
-  return await api.post<RequestResponse<Account>>('/account/add', qs.stringify(account))
+// 添加账户
+const addAccount = (account: AddAccountForm) => {
+  return api.post<RequestResponse<Account>>('/account/add', qs.stringify(account))
 }
 
+// 编辑账户
 const editAccount = (account: EditAccountForm) => {
   return api.put<RequestResponse<Account>>('/account/update/' + account.id, qs.stringify(account))
+}
+
+// 删除账户
+const deleteAccount = (id: number) => {
+  return api.delete<RequestResponse<Account>>('/account/delete/' + id)
 }
 
 export interface AccountList {
@@ -46,8 +53,9 @@ export interface AccountList {
   count: number;
 }
 
+// 账户列表
 const accountList = (page: number) => {
   return api.get<RequestResponse<AccountList>>('/account/list?p=' + page)
 }
 
-export { addAccount, accountList, editAccount }
+export { addAccount, accountList, editAccount, deleteAccount }

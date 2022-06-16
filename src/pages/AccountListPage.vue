@@ -22,7 +22,7 @@
               <q-item v-for="col in props.cols" :key="col.name">
                 <div v-if="col.name=='action'" style="width: 100%;" class="q-pa-sm row justify-around">
                   <q-btn @click="openEditAccountDialog(col.value)">编辑{{col.value.id}}</q-btn>
-                  <q-btn color="red-7">删除{{col.value.id}}</q-btn>
+                  <q-btn @click="onDeleteAccount(col.value)" color="red-7">删除{{col.value.id}}</q-btn>
                 </div>
                 <template v-else>
                   <q-item-section>
@@ -84,7 +84,7 @@
 <script lang="ts">
 import { successNotify } from 'src/utils/notify'
 import { defineComponent, ref, reactive, onMounted } from 'vue'
-import { AddAccountForm, addAccount, Account, accountList, EditAccountForm, editAccount } from '../api/account'
+import { AddAccountForm, addAccount, Account, accountList, EditAccountForm, editAccount, deleteAccount } from '../api/account'
 import dayjs from 'dayjs'
 
 export default defineComponent({
@@ -112,8 +112,7 @@ export default defineComponent({
     const accountListLoading = ref(false)
 
     const onAddAccount = async () => {
-      const data = await addAccount(addAccountForm)
-      console.log('data', data)
+      await addAccount(addAccountForm)
       // 添加成功后弹出对话框，并且把数据追加到列表头部
       successNotify('添加成功', {
         onDismiss: () => {
@@ -135,7 +134,6 @@ export default defineComponent({
 
     const onEditAccount = async () => {
       const data = await editAccount(editAccountForm)
-      console.log('data', data)
       // 添加成功后弹出对话框，并且把数据追加到列表头部
       successNotify('编辑成功', {
         onDismiss: () => {
@@ -162,6 +160,15 @@ export default defineComponent({
               item.total = account.total
             }
           })
+        }
+      })
+    }
+
+    const onDeleteAccount = async (account: Account) => {
+      await deleteAccount(account.id)
+      successNotify('删除成功', {
+        onDismiss: () => {
+          accountListData.value.splice(accountListData.value.indexOf(account), 1)
         }
       })
     }
@@ -232,7 +239,8 @@ export default defineComponent({
       showEditAccountDialog,
       openEditAccountDialog,
       editAccountForm,
-      onEditAccount
+      onEditAccount,
+      onDeleteAccount
     }
   }
 })
