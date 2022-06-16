@@ -33,12 +33,12 @@ export interface Account {
   profit_amount: number;
 }
 
-const addAccount = (account: AddAccountForm) => {
-  return api.post<RequestResponse<Account>>('/account/add', qs.stringify(account))
+const addAccount = async (account: AddAccountForm) => {
+  return await api.post<RequestResponse<Account>>('/account/add', qs.stringify(account))
 }
 
 const editAccount = (account: EditAccountForm) => {
-  return api.post<RequestResponse<Account>>('/account/add', qs.stringify(account))
+  return api.put<RequestResponse<Account>>('/account/update/' + account.id, qs.stringify(account))
 }
 
 export interface AccountList {

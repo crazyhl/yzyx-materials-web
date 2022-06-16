@@ -17,12 +17,12 @@
         @request="getList"
       >
         <template v-slot:item="props">
-          <q-card class="q-mx-xs">
+          <q-card class="q-mx-xs q-mb-sm" style="width:300px;">
             <q-list dense>
               <q-item v-for="col in props.cols" :key="col.name">
-                <div v-if="col.name=='action'" class="q-pa-sm">
-                  <q-btn @click="openEditAccountDialog(col.value)">编辑{{col.value.id}}</q-btn>&nbsp;&nbsp;
-                  <q-btn color="red-7">删除{{col.value.id}}</q-btn>&nbsp;&nbsp;
+                <div v-if="col.name=='action'" style="width: 100%;" class="q-pa-sm row justify-around">
+                  <q-btn @click="openEditAccountDialog(col.value)">编辑{{col.value.id}}</q-btn>
+                  <q-btn color="red-7">删除{{col.value.id}}</q-btn>
                 </div>
                 <template v-else>
                   <q-item-section>
@@ -111,8 +111,8 @@ export default defineComponent({
     const accountListData = ref<Account[]>([])
     const accountListLoading = ref(false)
 
-    const onAddAccount = () => {
-      const data = addAccount(addAccountForm)
+    const onAddAccount = async () => {
+      const data = await addAccount(addAccountForm)
       console.log('data', data)
       // 添加成功后弹出对话框，并且把数据追加到列表头部
       successNotify('添加成功', {
@@ -133,24 +133,34 @@ export default defineComponent({
       })
     }
 
-    const onEditAccount = () => {
-      const data = editAccount(editAccountForm)
+    const onEditAccount = async () => {
+      const data = await editAccount(editAccountForm)
       console.log('data', data)
       // 添加成功后弹出对话框，并且把数据追加到列表头部
-      successNotify('添加成功', {
+      successNotify('编辑成功', {
         onDismiss: () => {
-          // 追加到列表头部
-          // 添加后重置数据
           editAccountForm.name = ''
           editAccountForm.description = ''
           editAccountForm.expect_rate_of_return = 0
           editAccountForm.per_part_money = 0
           editAccountForm.expect_total_money = 0
           editAccountForm.id = 0
-
-          tablePagination.value.page = 1
-          getList({
-            pagination: tablePagination.value
+          // 遍历数据，更新数据
+          accountListData.value.forEach(item => {
+            if (item.id === data.data.data.id) {
+              const account = data.data.data
+              item.id = account.id
+              item.name = account.name
+              item.desc = account.desc
+              item.create_at = account.create_at
+              item.update_at = account.update_at
+              item.expect_rate_of_return = account.expect_rate_of_return
+              item.expect_total = account.expect_total
+              item.per_part = account.per_part
+              item.profit_amount = account.profit_amount
+              item.rate_of_return = account.rate_of_return
+              item.total = account.total
+            }
           })
         }
       })
@@ -171,6 +181,7 @@ export default defineComponent({
       { name: 'desc', label: '描述', field: 'desc', sortable: false },
       { name: 'total', label: '当前投入', field: 'total', sortable: false },
       { name: 'expect_total', label: '预期投入', field: 'expect_total', sortable: false },
+      { name: 'per_part', label: '每份金额', field: 'per_part', sortable: false },
       { name: 'rate_of_return', label: '当前收益率', field: 'rate_of_return', sortable: false },
       { name: 'expect_rate_of_return', label: '预期收益率', field: 'expect_rate_of_return', sortable: false },
       { name: 'profit_amount', label: '收益金额', field: 'profit_amount', sortable: false },
