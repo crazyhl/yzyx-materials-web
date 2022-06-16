@@ -2,7 +2,16 @@ import { api } from '../boot/axios'
 import qs from 'qs'
 import { RequestResponse } from './response'
 
-export interface AddAccount { // 添加账户 model
+export interface AddAccountForm { // 添加账户 model
+  name: string; // 账户名称
+  description?: string; // 描述
+  expect_total_money?: number; // 预计总金额
+  per_part_money?: number; // 每份金额
+  expect_rate_of_return?: number; // 预计收益率
+}
+
+export interface EditAccountForm { // 添加账户 model
+  id: number;
   name: string; // 账户名称
   description?: string; // 描述
   expect_total_money?: number; // 预计总金额
@@ -24,7 +33,11 @@ export interface Account {
   profit_amount: number;
 }
 
-const addAccount = (account: AddAccount) => {
+const addAccount = (account: AddAccountForm) => {
+  return api.post<RequestResponse<Account>>('/account/add', qs.stringify(account))
+}
+
+const editAccount = (account: EditAccountForm) => {
   return api.post<RequestResponse<Account>>('/account/add', qs.stringify(account))
 }
 
@@ -37,4 +50,4 @@ const accountList = (page: number) => {
   return api.get<RequestResponse<AccountList>>('/account/list?p=' + page)
 }
 
-export { addAccount, accountList }
+export { addAccount, accountList, editAccount }

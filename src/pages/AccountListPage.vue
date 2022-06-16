@@ -21,15 +21,15 @@
             <q-list dense>
               <q-item v-for="col in props.cols" :key="col.name">
                 <div v-if="col.name=='action'" class="q-pa-sm">
-                  <q-btn>编辑{{col.value.id}}</q-btn>&nbsp;&nbsp;
+                  <q-btn @click="openEditAccountDialog(col.value)">编辑{{col.value.id}}</q-btn>&nbsp;&nbsp;
                   <q-btn color="red-7">删除{{col.value.id}}</q-btn>&nbsp;&nbsp;
                 </div>
                 <template v-else>
                   <q-item-section>
                     <q-item-label>{{ col.label }}</q-item-label>
                   </q-item-section>
-                  <q-item-section side>
-                    <q-item-label caption>{{ col.value }}</q-item-label>
+                  <q-item-section side style="max-width: 200px;word-wrap: break-word;">
+                    <q-item-label caption >{{ col.value }}</q-item-label>
                   </q-item-section>
                 </template>
               </q-item>
@@ -66,16 +66,16 @@
       </q-card-section>
 
       <q-card-section class="q-pt-none">
-        <q-input autofocus label="名称" v-model="addAccountForm.name" />
-        <q-input label="描述" type="textarea" v-model="addAccountForm.description" autogrow/>
-        <q-input label="预期投入总金额" type="number" v-model.number="addAccountForm.expect_total_money" />
-        <q-input label="预期每份金额" type="number" v-model.number="addAccountForm.per_part_money" />
-        <q-input label="预期收益率" type="number" v-model.number="addAccountForm.expect_rate_of_return" />
+        <q-input autofocus label="名称" v-model="editAccountForm.name" />
+        <q-input label="描述" type="textarea" v-model="editAccountForm.description" autogrow/>
+        <q-input label="预期投入总金额" type="number" v-model.number="editAccountForm.expect_total_money" />
+        <q-input label="预期每份金额" type="number" v-model.number="editAccountForm.per_part_money" />
+        <q-input label="预期收益率" type="number" v-model.number="editAccountForm.expect_rate_of_return" />
       </q-card-section>
 
       <q-card-actions align="right" class="text-primary">
         <q-btn flat label="取消" v-close-popup />
-        <q-btn flat label="添加" @click="onAddAccount" v-close-popup />
+        <q-btn flat label="编辑" @click="onEditAccount" v-close-popup />
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -84,7 +84,7 @@
 <script lang="ts">
 import { successNotify } from 'src/utils/notify'
 import { defineComponent, ref, reactive, onMounted } from 'vue'
-import { AddAccount, addAccount, Account, accountList } from '../api/account'
+import { AddAccountForm, addAccount, Account, accountList, EditAccountForm, editAccount } from '../api/account'
 import dayjs from 'dayjs'
 
 export default defineComponent({
@@ -93,7 +93,15 @@ export default defineComponent({
   setup () {
     const showAddAccountDialog = ref(false)
     const showEditAccountDialog = ref(false)
-    const addAccountForm = reactive<AddAccount>({
+    const addAccountForm = reactive<AddAccountForm>({
+      name: '',
+      description: '',
+      expect_rate_of_return: 0,
+      per_part_money: 0,
+      expect_total_money: 0
+    })
+    const editAccountForm = reactive<EditAccountForm>({
+      id: 0,
       name: '',
       description: '',
       expect_rate_of_return: 0,
@@ -123,6 +131,39 @@ export default defineComponent({
           })
         }
       })
+    }
+
+    const onEditAccount = () => {
+      const data = editAccount(editAccountForm)
+      console.log('data', data)
+      // 添加成功后弹出对话框，并且把数据追加到列表头部
+      successNotify('添加成功', {
+        onDismiss: () => {
+          // 追加到列表头部
+          // 添加后重置数据
+          editAccountForm.name = ''
+          editAccountForm.description = ''
+          editAccountForm.expect_rate_of_return = 0
+          editAccountForm.per_part_money = 0
+          editAccountForm.expect_total_money = 0
+          editAccountForm.id = 0
+
+          tablePagination.value.page = 1
+          getList({
+            pagination: tablePagination.value
+          })
+        }
+      })
+    }
+
+    const openEditAccountDialog = (account: Account) => {
+      editAccountForm.id = account.id
+      editAccountForm.name = account.name
+      editAccountForm.description = account.desc
+      editAccountForm.expect_rate_of_return = account.expect_rate_of_return
+      editAccountForm.expect_total_money = account.expect_total
+      editAccountForm.per_part_money = account.per_part
+      showEditAccountDialog.value = true
     }
 
     const columns = [
@@ -177,7 +218,10 @@ export default defineComponent({
       columns,
       tablePagination,
       getList,
-      showEditAccountDialog
+      showEditAccountDialog,
+      openEditAccountDialog,
+      editAccountForm,
+      onEditAccount
     }
   }
 })
