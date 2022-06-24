@@ -1,7 +1,7 @@
 <template>
   <q-page class="column">
     <div class="q-pa-md row justify-end">
-      <q-btn color="primary" label="添加账户" @click="showAddAccountDialog = true" />
+      <q-btn color="primary" label="添加品种" @click="showAddAccountDialog = true" />
     </div>
     <div class="q-pa-md">
       <q-table
@@ -28,8 +28,8 @@
                   <q-item-section>
                     <q-item-label>{{ col.label }}</q-item-label>
                   </q-item-section>
-                  <q-item-section side>
-                    <q-item-label caption class="ellipsis" style="max-width: 200px;word-wrap: break-word;">{{ col.value }}</q-item-label>
+                  <q-item-section side style="max-width: 200px;word-wrap: break-word;">
+                    <q-item-label caption >{{ col.value }}</q-item-label>
                   </q-item-section>
                 </template>
               </q-item>

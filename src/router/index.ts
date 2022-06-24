@@ -43,7 +43,7 @@ export default route(function (/* { store, ssrContext } */) {
       }
     }
     if (to.path === '/') {
-      return { name: 'index' }
+      return { name: 'Index' }
     }
   })
   router = Router

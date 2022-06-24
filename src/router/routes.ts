@@ -22,12 +22,12 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: '/breed/list',
-        component: () => import('pages/AccountListPage.vue'),
+        component: () => import('pages/BreedListPage.vue'),
         meta: { requiresAuth: true }
       },
       {
         path: '/index',
-        name: 'index',
+        name: 'Index',
         component: () => import('pages/IndexPage.vue'),
         meta: { requiresAuth: true }
       }
