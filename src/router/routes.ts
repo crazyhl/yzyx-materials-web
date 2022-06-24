@@ -27,6 +27,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: '/index',
+        name: 'index',
         component: () => import('pages/IndexPage.vue'),
         meta: { requiresAuth: true }
       }

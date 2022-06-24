@@ -42,6 +42,9 @@ export default route(function (/* { store, ssrContext } */) {
         return { name: 'Login' }
       }
     }
+    if (to.path === '/') {
+      return { name: 'index' }
+    }
   })
   router = Router
   return Router
