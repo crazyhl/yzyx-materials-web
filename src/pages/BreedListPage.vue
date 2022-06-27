@@ -1,81 +1,101 @@
 <template>
   <q-page class="column">
     <div class="q-pa-md row justify-end">
-      <q-btn color="primary" label="添加品种" @click="showAddAccountDialog = true" />
+      <q-btn color="primary" label="添加品种" @click="showAddBreedDialog = true" />
     </div>
     <div class="q-pa-md">
       <q-table
-        grid
-        title="账户列表"
-        :rows="accountListData"
+        title="品种列表"
+        :rows="breedListData"
         :columns="columns"
         row-key="name"
-        hide-header
-        :loading="accountListLoading"
+        :loading="breedListLoading"
         v-model:pagination="tablePagination"
         :rows-per-page-options="[10]"
         @request="getList"
       >
-        <template v-slot:item="props">
-          <q-card class="q-mx-xs q-mb-sm" style="width:300px;">
-            <q-list dense>
-              <q-item v-for="col in props.cols" :key="col.name">
-                <div v-if="col.name=='action'" style="width: 100%;" class="q-pa-sm row justify-around">
-                  <q-btn @click="openEditAccountDialog(col.value)">编辑{{col.value.id}}</q-btn>
-                  <q-btn @click="onDeleteAccount(col.value)" color="red-7">删除{{col.value.id}}</q-btn>
-                </div>
-                <template v-else>
-                  <q-item-section>
-                    <q-item-label>{{ col.label }}</q-item-label>
-                  </q-item-section>
-                  <q-item-section side style="max-width: 200px;word-wrap: break-word;">
-                    <q-item-label caption >{{ col.value }}</q-item-label>
-                  </q-item-section>
-                </template>
-              </q-item>
-            </q-list>
-          </q-card>
-        </template>
+      <template v-slot:body-cell-value="props">
+        <q-td :props="props">
+          <div>
+            <q-badge v-if="props.value.cost > props.value.net_value" color="green">
+            {{props.value.cost}}/{{props.value.net_value}}
+            </q-badge>
+            <q-badge v-else color="red">
+            {{props.value.cost}}/{{props.value.net_value}}
+            </q-badge>
+          </div>
+        </q-td>
+      </template>
+      <template v-slot:body-cell-total_value="props">
+        <q-td :props="props">
+          <div>
+            <q-badge v-if="props.value.total_cost > props.value.total_net_value" color="green">
+            {{props.value.total_cost}}/{{props.value.total_net_value}}
+            </q-badge>
+            <q-badge v-else color="red">
+            {{props.value.total_cost}}/{{props.value.total_net_value}}
+            </q-badge>
+          </div>
+        </q-td>
+      </template>
+      <template v-slot:body-cell-profit="props">
+        <q-td :props="props">
+          <div>
+            <q-badge v-if="props.value.total_cost > props.value.total_net_value" color="green">
+            {{props.value.total_cost - props.value.total_net_value}}
+            </q-badge>
+            <q-badge v-else color="red">
+            {{props.value.total_cost - props.value.total_net_value}}
+            </q-badge>
+          </div>
+        </q-td>
+      </template>
+      <template v-slot:body-cell-action="props">
+        <q-td :props="props">
+          <div>
+            <q-btn @click="openEditBreedDialog(props.value)">编辑</q-btn>&nbsp;
+            <q-btn @click="onDeleteAccount(props.value)" color="red-7">删除</q-btn>
+          </div>
+        </q-td>
+      </template>
       </q-table>
     </div>
   </q-page>
-  <q-dialog v-model="showAddAccountDialog" persistent>
+  <q-dialog v-model="showAddBreedDialog" persistent>
     <q-card style="min-width: 500px">
       <q-card-section>
-        <div class="text-h6">添加账户</div>
+        <div class="text-h6">添加品种</div>
       </q-card-section>
 
       <q-card-section class="q-pt-none">
-        <q-input autofocus label="名称" v-model="addAccountForm.name" />
-        <q-input label="描述" type="textarea" v-model="addAccountForm.description" autogrow/>
-        <q-input label="预期投入总金额" type="number" v-model.number="addAccountForm.expect_total_money" />
-        <q-input label="预期每份金额" type="number" v-model.number="addAccountForm.per_part_money" />
-        <q-input label="预期收益率" type="number" v-model.number="addAccountForm.expect_rate_of_return" />
+        <q-input autofocus label="代码" v-model="addBreedForm.code" />
+        <q-input autofocus label="名称" v-model="addBreedForm.name" />
+        <q-input label="净值" type="number" v-model.number="addBreedForm.net_value" />
+        <q-input label="成本" type="number" v-model.number="addBreedForm.cost" />
       </q-card-section>
 
       <q-card-actions align="right" class="text-primary">
         <q-btn flat label="取消" v-close-popup />
-        <q-btn flat label="添加" @click="onAddAccount" v-close-popup />
+        <q-btn flat label="添加" @click="onAddBreed" v-close-popup />
       </q-card-actions>
     </q-card>
   </q-dialog>
-  <q-dialog v-model="showEditAccountDialog" persistent>
+  <q-dialog v-model="showEditBreedDialog" persistent>
     <q-card style="min-width: 500px">
       <q-card-section>
-        <div class="text-h6">编辑账户</div>
+        <div class="text-h6">编辑品种</div>
       </q-card-section>
 
       <q-card-section class="q-pt-none">
-        <q-input autofocus label="名称" v-model="editAccountForm.name" />
-        <q-input label="描述" type="textarea" v-model="editAccountForm.description" autogrow/>
-        <q-input label="预期投入总金额" type="number" v-model.number="editAccountForm.expect_total_money" />
-        <q-input label="预期每份金额" type="number" v-model.number="editAccountForm.per_part_money" />
-        <q-input label="预期收益率" type="number" v-model.number="editAccountForm.expect_rate_of_return" />
+        <q-input autofocus label="代码" v-model="editBreedForm.code" />
+        <q-input autofocus label="名称" v-model="editBreedForm.name" />
+        <q-input label="净值" type="number" v-model.number="editBreedForm.net_value" />
+        <q-input label="成本" type="number" v-model.number="editBreedForm.cost" />
       </q-card-section>
 
       <q-card-actions align="right" class="text-primary">
         <q-btn flat label="取消" v-close-popup />
-        <q-btn flat label="编辑" @click="onEditAccount" v-close-popup />
+        <q-btn flat label="编辑" @click="onEditBreed" v-close-popup />
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -84,45 +104,42 @@
 <script lang="ts">
 import { successNotify } from 'src/utils/notify'
 import { defineComponent, ref, reactive, onMounted } from 'vue'
-import { AddAccountForm, addAccount, Account, accountList, EditAccountForm, editAccount, deleteAccount } from '../api/account'
+import { AddBreedForm, EditBreedForm, Breed, addBreed, editBreed, deleteBreed, breedList } from '../api/breed'
 import dayjs from 'dayjs'
 
 export default defineComponent({
-  name: 'AccountListPage',
+  name: 'BreedListPage',
   components: { },
   setup () {
-    const showAddAccountDialog = ref(false)
-    const showEditAccountDialog = ref(false)
-    const addAccountForm = reactive<AddAccountForm>({
+    const showAddBreedDialog = ref(false)
+    const showEditBreedDialog = ref(false)
+    const addBreedForm = reactive<AddBreedForm>({
+      code: '',
       name: '',
-      description: '',
-      expect_rate_of_return: 0,
-      per_part_money: 0,
-      expect_total_money: 0
+      net_value: 0,
+      cost: 0
     })
-    const editAccountForm = reactive<EditAccountForm>({
+    const editBreedForm = reactive<EditBreedForm>({
       id: 0,
+      code: '',
       name: '',
-      description: '',
-      expect_rate_of_return: 0,
-      per_part_money: 0,
-      expect_total_money: 0
+      net_value: 0,
+      cost: 0
     })
-    const accountListData = ref<Account[]>([])
-    const accountListLoading = ref(false)
+    const breedListData = ref<Breed[]>([])
+    const breedListLoading = ref(false)
 
-    const onAddAccount = async () => {
-      await addAccount(addAccountForm)
+    const onAddBreed = async () => {
+      await addBreed(addBreedForm)
       // 添加成功后弹出对话框，并且把数据追加到列表头部
       successNotify('添加成功', {
         onDismiss: () => {
           // 追加到列表头部
           // 添加后重置数据
-          addAccountForm.name = ''
-          addAccountForm.description = ''
-          addAccountForm.expect_rate_of_return = 0
-          addAccountForm.per_part_money = 0
-          addAccountForm.expect_total_money = 0
+          addBreedForm.name = ''
+          addBreedForm.code = ''
+          addBreedForm.net_value = 0
+          addBreedForm.cost = 0
 
           tablePagination.value.page = 1
           getList({
@@ -132,72 +149,81 @@ export default defineComponent({
       })
     }
 
-    const onEditAccount = async () => {
-      const data = await editAccount(editAccountForm)
+    const onEditBreed = async () => {
+      const data = await editBreed(editBreedForm)
       // 添加成功后弹出对话框，并且把数据追加到列表头部
       successNotify('编辑成功', {
         onDismiss: () => {
-          editAccountForm.name = ''
-          editAccountForm.description = ''
-          editAccountForm.expect_rate_of_return = 0
-          editAccountForm.per_part_money = 0
-          editAccountForm.expect_total_money = 0
-          editAccountForm.id = 0
+          editBreedForm.name = ''
+          editBreedForm.code = ''
+          editBreedForm.net_value = 0
+          editBreedForm.cost = 0
+          editBreedForm.id = 0
           // 遍历数据，更新数据
-          accountListData.value.forEach(item => {
+          breedListData.value.forEach(item => {
             if (item.id === data.data.data.id) {
-              const account = data.data.data
-              item.id = account.id
-              item.name = account.name
-              item.desc = account.desc
-              item.create_at = account.create_at
-              item.update_at = account.update_at
-              item.expect_rate_of_return = account.expect_rate_of_return
-              item.expect_total = account.expect_total
-              item.per_part = account.per_part
-              item.profit_amount = account.profit_amount
-              item.rate_of_return = account.rate_of_return
-              item.total = account.total
+              const breed = data.data.data
+              item.id = breed.id
+              item.create_at = breed.create_at
+              item.update_at = breed.update_at
+              item.name = breed.name
+              item.cost = breed.cost
+              item.code = breed.code
+              item.net_value = breed.net_value
+              item.total_count = breed.total_count
+              item.total_cost = breed.total_cost
+              item.total_net_value = breed.total_net_value
             }
           })
         }
       })
     }
 
-    const onDeleteAccount = async (account: Account) => {
-      await deleteAccount(account.id)
+    const onDeleteAccount = async (breed: Breed) => {
+      await deleteBreed(breed.id)
       successNotify('删除成功', {
         onDismiss: () => {
-          accountListData.value.splice(accountListData.value.indexOf(account), 1)
+          breedListData.value.splice(breedListData.value.indexOf(breed), 1)
         }
       })
     }
 
-    const openEditAccountDialog = (account: Account) => {
-      editAccountForm.id = account.id
-      editAccountForm.name = account.name
-      editAccountForm.description = account.desc
-      editAccountForm.expect_rate_of_return = account.expect_rate_of_return
-      editAccountForm.expect_total_money = account.expect_total
-      editAccountForm.per_part_money = account.per_part
-      showEditAccountDialog.value = true
+    const openEditBreedDialog = (breed: Breed) => {
+      editBreedForm.id = breed.id
+      editBreedForm.name = breed.name
+      editBreedForm.code = breed.code
+      editBreedForm.net_value = breed.net_value
+      editBreedForm.cost = breed.cost
+      showEditBreedDialog.value = true
     }
 
     const columns = [
+      { name: 'code', label: '代码', field: 'code', sortable: false },
       { name: 'name', label: '名称', field: 'name', format: (val: string) => `${val}`, sortable: false },
-      { name: 'desc', label: '描述', field: 'desc', sortable: false },
-      { name: 'total', label: '当前投入', field: 'total', sortable: false },
-      { name: 'expect_total', label: '预期投入', field: 'expect_total', sortable: false },
-      { name: 'per_part', label: '每份金额', field: 'per_part', sortable: false },
-      { name: 'rate_of_return', label: '当前收益率', field: 'rate_of_return', sortable: false },
-      { name: 'expect_rate_of_return', label: '预期收益率', field: 'expect_rate_of_return', sortable: false },
-      { name: 'profit_amount', label: '收益金额', field: 'profit_amount', sortable: false },
-      { name: 'create_at', label: '创建时间', field: 'create_at', format: (val: number) => { return dayjs.unix(val).format('YYYY-MM-DD') }, sortable: false },
-      { name: 'update_at', label: '更新时间', field: 'update_at', format: (val: number) => { return dayjs.unix(val).format('YYYY-MM-DD') }, sortable: false },
+      {
+        name: 'value',
+        label: '成本/净值',
+        field: (row:Breed) => row,
+        sortable: false
+      },
+      { name: 'total_count', label: '总份数', field: 'total_count', sortable: false },
+      { name: 'profit', label: '利润', field: (row:Breed) => row, sortable: false },
+      { name: 'total_value', label: '总成本/总净值', field: (row:Breed) => row, sortable: false },
+      {
+        name: 'time',
+        label: '添加/更新时间',
+        field: (row:Breed) => row,
+        format: (val: Breed) => {
+          const createTimeStr = dayjs.unix(val.create_at).format('YYYY-MM-DD')
+          const updateTimeStr = dayjs.unix(val.update_at).format('YYYY-MM-DD')
+          return createTimeStr + '/' + updateTimeStr
+        },
+        sortable: false
+      },
       {
         name: 'action',
         label: '操作',
-        field: (row: Account) => row,
+        field: (row: Breed) => row,
         sortable: false
       }
     ]
@@ -210,11 +236,11 @@ export default defineComponent({
     })
 
     const getList = async (props: {pagination: {sortBy: string, descending: boolean, page: number, rowsPerPage: number }}) => {
-      accountListLoading.value = true
+      breedListLoading.value = true
       const { page } = props.pagination
-      const { data } = await accountList(page)
-      accountListLoading.value = false
-      accountListData.value = data.data.data
+      const { data } = await breedList(page)
+      breedListLoading.value = false
+      breedListData.value = data.data.data
       // 更新分页数据
       tablePagination.value.rowsNumber = data.data.count
       tablePagination.value.page = page
@@ -228,18 +254,18 @@ export default defineComponent({
     })
 
     return {
-      showAddAccountDialog,
-      addAccountForm,
-      onAddAccount,
-      accountListData,
-      accountListLoading,
+      showAddBreedDialog,
+      addBreedForm,
+      onAddBreed,
+      breedListData,
+      breedListLoading,
       columns,
       tablePagination,
       getList,
-      showEditAccountDialog,
-      openEditAccountDialog,
-      editAccountForm,
-      onEditAccount,
+      showEditBreedDialog,
+      openEditBreedDialog,
+      editBreedForm,
+      onEditBreed,
       onDeleteAccount
     }
   }
