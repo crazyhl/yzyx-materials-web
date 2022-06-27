@@ -53,6 +53,7 @@
       <template v-slot:body-cell-action="props">
         <q-td :props="props">
           <div>
+            <q-btn @click="openUpdateBreedNetValueDialog(props.value)" color="deep-purple">更新净值</q-btn>&nbsp;
             <q-btn @click="openEditBreedDialog(props.value)">编辑</q-btn>&nbsp;
             <q-btn @click="onDeleteAccount(props.value)" color="red-7">删除</q-btn>
           </div>
@@ -99,12 +100,28 @@
       </q-card-actions>
     </q-card>
   </q-dialog>
+  <q-dialog v-model="showUpdateBreedNetValueDialog" persistent>
+    <q-card style="min-width: 500px">
+      <q-card-section>
+        <div class="text-h6">更近净值</div>
+      </q-card-section>
+
+      <q-card-section class="q-pt-none">
+        <q-input label="净值" type="number" v-model.number="updateNetValueForm.net_value" />
+      </q-card-section>
+
+      <q-card-actions align="right" class="text-primary">
+        <q-btn flat label="取消" v-close-popup />
+        <q-btn flat label="编辑" @click="onUpdateBreedNetValue" v-close-popup />
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
 </template>
 
 <script lang="ts">
 import { successNotify } from 'src/utils/notify'
 import { defineComponent, ref, reactive, onMounted } from 'vue'
-import { AddBreedForm, EditBreedForm, Breed, addBreed, editBreed, deleteBreed, breedList } from '../api/breed'
+import { AddBreedForm, EditBreedForm, Breed, addBreed, editBreed, deleteBreed, breedList, UpdateNetValueForm, editBreedNetValue } from '../api/breed'
 import dayjs from 'dayjs'
 
 export default defineComponent({
@@ -246,6 +263,46 @@ export default defineComponent({
       tablePagination.value.page = page
     }
 
+    const showUpdateBreedNetValueDialog = ref(false)
+    const updateNetValueForm = reactive<UpdateNetValueForm>({
+      id: 0,
+      net_value: 0
+    })
+
+    const openUpdateBreedNetValueDialog = (breed: Breed) => {
+      updateNetValueForm.id = breed.id
+      updateNetValueForm.net_value = breed.net_value
+      showUpdateBreedNetValueDialog.value = true
+    }
+
+    const onUpdateBreedNetValue = async () => {
+      const data = await editBreedNetValue(updateNetValueForm)
+      // 添加成功后弹出对话框，并且把数据追加到列表头部
+      successNotify('更新净值成功', {
+        onDismiss: () => {
+          updateNetValueForm.net_value = 0
+          updateNetValueForm.id = 0
+          // 遍历数据，更新数据
+          breedListData.value.forEach(item => {
+            if (item.id === data.data.data.id) {
+              const breed = data.data.data
+              item.id = breed.id
+              item.create_at = breed.create_at
+              item.update_at = breed.update_at
+              item.name = breed.name
+              item.cost = breed.cost
+              item.code = breed.code
+              item.net_value = breed.net_value
+              item.total_count = breed.total_count
+              item.total_cost = breed.total_cost
+              item.total_net_value = breed.total_net_value
+            }
+          })
+        }
+      })
+    }
+
+    // 在挂载页面的时候获取第一页的数据
     onMounted(() => {
       // get initial data from server (1st page)
       getList({
@@ -266,7 +323,11 @@ export default defineComponent({
       openEditBreedDialog,
       editBreedForm,
       onEditBreed,
-      onDeleteAccount
+      onDeleteAccount,
+      openUpdateBreedNetValueDialog,
+      onUpdateBreedNetValue,
+      showUpdateBreedNetValueDialog,
+      updateNetValueForm
     }
   }
 })
