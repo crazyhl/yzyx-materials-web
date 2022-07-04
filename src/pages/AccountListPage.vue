@@ -1,7 +1,7 @@
 <template>
   <q-page class="column">
     <div class="q-pa-md row justify-end">
-      <q-btn color="primary" label="添加账户" @click="showAddAccountDialog = true" />
+      <q-btn color="primary" label="添加账户" @click="showAddAccountDialog = true" />{{showAddAccountDialog}}
     </div>
     <div class="q-pa-md">
       <q-table
@@ -39,26 +39,7 @@
       </q-table>
     </div>
   </q-page>
-  <q-dialog v-model="showAddAccountDialog" persistent>
-    <q-card style="min-width: 500px">
-      <q-card-section>
-        <div class="text-h6">添加账户</div>
-      </q-card-section>
-
-      <q-card-section class="q-pt-none">
-        <q-input autofocus label="名称" v-model="addAccountForm.name" />
-        <q-input label="描述" type="textarea" v-model="addAccountForm.description" autogrow/>
-        <q-input label="预期投入总金额" type="number" v-model.number="addAccountForm.expect_total_money" />
-        <q-input label="预期每份金额" type="number" v-model.number="addAccountForm.per_part_money" />
-        <q-input label="预期收益率" type="number" v-model.number="addAccountForm.expect_rate_of_return" />
-      </q-card-section>
-
-      <q-card-actions align="right" class="text-primary">
-        <q-btn flat label="取消" v-close-popup />
-        <q-btn flat label="添加" @click="onAddAccount" v-close-popup />
-      </q-card-actions>
-    </q-card>
-  </q-dialog>
+  <add-account-dialog :showAddAccountDialog="showAddAccountDialog" @close-dialog="showAddAccountDialog = false" @add-success="refreshData" />
   <q-dialog v-model="showEditAccountDialog" persistent>
     <q-card style="min-width: 500px">
       <q-card-section>
@@ -84,22 +65,17 @@
 <script lang="ts">
 import { successNotify } from 'src/utils/notify'
 import { defineComponent, ref, reactive, onMounted } from 'vue'
-import { AddAccountForm, addAccount, Account, accountList, EditAccountForm, editAccount, deleteAccount } from '../api/account'
+import { Account, accountList, EditAccountForm, editAccount, deleteAccount } from '../api/account'
 import dayjs from 'dayjs'
+import AddAccountDialog from 'src/components/AddAccountDialog.vue'
 
 export default defineComponent({
   name: 'AccountListPage',
-  components: { },
+  components: { AddAccountDialog },
   setup () {
     const showAddAccountDialog = ref(false)
     const showEditAccountDialog = ref(false)
-    const addAccountForm = reactive<AddAccountForm>({
-      name: '',
-      description: '',
-      expect_rate_of_return: 0,
-      per_part_money: 0,
-      expect_total_money: 0
-    })
+
     const editAccountForm = reactive<EditAccountForm>({
       id: 0,
       name: '',
@@ -111,24 +87,12 @@ export default defineComponent({
     const accountListData = ref<Account[]>([])
     const accountListLoading = ref(false)
 
-    const onAddAccount = async () => {
-      await addAccount(addAccountForm)
-      // 添加成功后弹出对话框，并且把数据追加到列表头部
-      successNotify('添加成功', {
-        onDismiss: () => {
-          // 追加到列表头部
-          // 添加后重置数据
-          addAccountForm.name = ''
-          addAccountForm.description = ''
-          addAccountForm.expect_rate_of_return = 0
-          addAccountForm.per_part_money = 0
-          addAccountForm.expect_total_money = 0
-
-          tablePagination.value.page = 1
-          getList({
-            pagination: tablePagination.value
-          })
-        }
+    const refreshData = () => {
+      console.log('call refreshData')
+      showAddAccountDialog.value = false
+      tablePagination.value.page = 1
+      getList({
+        pagination: tablePagination.value
       })
     }
 
@@ -229,8 +193,6 @@ export default defineComponent({
 
     return {
       showAddAccountDialog,
-      addAccountForm,
-      onAddAccount,
       accountListData,
       accountListLoading,
       columns,
@@ -240,7 +202,8 @@ export default defineComponent({
       openEditAccountDialog,
       editAccountForm,
       onEditAccount,
-      onDeleteAccount
+      onDeleteAccount,
+      refreshData
     }
   }
 })
