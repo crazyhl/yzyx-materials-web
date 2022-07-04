@@ -1,7 +1,7 @@
 <template>
   <q-page class="column">
     <div class="q-pa-md row justify-end">
-      <q-btn color="primary" label="添加账户" @click="showAddAccountDialog = true" />{{showAddAccountDialog}}
+      <q-btn color="primary" label="添加账户" @click="showAddAccountDialog = true" />
     </div>
     <div class="q-pa-md">
       <q-table

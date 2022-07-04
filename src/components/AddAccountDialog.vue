@@ -1,5 +1,4 @@
 <template>
-{{showDialog}}
   <q-dialog v-model="showDialog" persistent>
     <q-card style="min-width: 500px">
       <q-card-section>
