@@ -40,52 +40,38 @@
     </div>
   </q-page>
   <add-account-dialog :showAddAccountDialog="showAddAccountDialog" @close-dialog="showAddAccountDialog = false" @add-success="refreshData" />
-  <q-dialog v-model="showEditAccountDialog" persistent>
-    <q-card style="min-width: 500px">
-      <q-card-section>
-        <div class="text-h6">编辑账户</div>
-      </q-card-section>
-
-      <q-card-section class="q-pt-none">
-        <q-input autofocus label="名称" v-model="editAccountForm.name" />
-        <q-input label="描述" type="textarea" v-model="editAccountForm.description" autogrow/>
-        <q-input label="预期投入总金额" type="number" v-model.number="editAccountForm.expect_total_money" />
-        <q-input label="预期每份金额" type="number" v-model.number="editAccountForm.per_part_money" />
-        <q-input label="预期收益率" type="number" v-model.number="editAccountForm.expect_rate_of_return" />
-      </q-card-section>
-
-      <q-card-actions align="right" class="text-primary">
-        <q-btn flat label="取消" v-close-popup />
-        <q-btn flat label="编辑" @click="onEditAccount" v-close-popup />
-      </q-card-actions>
-    </q-card>
-  </q-dialog>
+  <edit-account-dialog :show-edit-account-dialog="showEditAccountDialog" @close-dialog="showEditAccountDialog = false" @edit-success="editSuccess" :account="editAccount" />
 </template>
 
 <script lang="ts">
 import { successNotify } from 'src/utils/notify'
-import { defineComponent, ref, reactive, onMounted } from 'vue'
-import { Account, accountList, EditAccountForm, editAccount, deleteAccount } from '../api/account'
+import { defineComponent, ref, onMounted } from 'vue'
+import { Account, accountList, deleteAccount } from '../api/account'
 import dayjs from 'dayjs'
 import AddAccountDialog from 'src/components/AddAccountDialog.vue'
+import EditAccountDialog from 'src/components/EditAccountDialog.vue'
 
 export default defineComponent({
   name: 'AccountListPage',
-  components: { AddAccountDialog },
+  components: { AddAccountDialog, EditAccountDialog },
   setup () {
     const showAddAccountDialog = ref(false)
     const showEditAccountDialog = ref(false)
-
-    const editAccountForm = reactive<EditAccountForm>({
-      id: 0,
-      name: '',
-      description: '',
-      expect_rate_of_return: 0,
-      per_part_money: 0,
-      expect_total_money: 0
-    })
     const accountListData = ref<Account[]>([])
     const accountListLoading = ref(false)
+    const editAccount = ref<Account>({
+      id: 0,
+      create_at: 0,
+      update_at: 0,
+      name: '',
+      desc: '',
+      total: 0,
+      expect_total: 0,
+      expect_rate_of_return: 0,
+      rate_of_return: 0,
+      per_part: 0,
+      profit_amount: 0
+    })
 
     const refreshData = () => {
       console.log('call refreshData')
@@ -95,35 +81,21 @@ export default defineComponent({
         pagination: tablePagination.value
       })
     }
-
-    const onEditAccount = async () => {
-      const data = await editAccount(editAccountForm)
-      // 添加成功后弹出对话框，并且把数据追加到列表头部
-      successNotify('编辑成功', {
-        onDismiss: () => {
-          editAccountForm.name = ''
-          editAccountForm.description = ''
-          editAccountForm.expect_rate_of_return = 0
-          editAccountForm.per_part_money = 0
-          editAccountForm.expect_total_money = 0
-          editAccountForm.id = 0
-          // 遍历数据，更新数据
-          accountListData.value.forEach(item => {
-            if (item.id === data.data.data.id) {
-              const account = data.data.data
-              item.id = account.id
-              item.name = account.name
-              item.desc = account.desc
-              item.create_at = account.create_at
-              item.update_at = account.update_at
-              item.expect_rate_of_return = account.expect_rate_of_return
-              item.expect_total = account.expect_total
-              item.per_part = account.per_part
-              item.profit_amount = account.profit_amount
-              item.rate_of_return = account.rate_of_return
-              item.total = account.total
-            }
-          })
+    const editSuccess = (account: Account) => {
+      // 遍历数据，更新数据
+      accountListData.value.forEach(item => {
+        if (item.id === account.id) {
+          item.id = account.id
+          item.name = account.name
+          item.desc = account.desc
+          item.create_at = account.create_at
+          item.update_at = account.update_at
+          item.expect_rate_of_return = account.expect_rate_of_return
+          item.expect_total = account.expect_total
+          item.per_part = account.per_part
+          item.profit_amount = account.profit_amount
+          item.rate_of_return = account.rate_of_return
+          item.total = account.total
         }
       })
     }
@@ -138,12 +110,8 @@ export default defineComponent({
     }
 
     const openEditAccountDialog = (account: Account) => {
-      editAccountForm.id = account.id
-      editAccountForm.name = account.name
-      editAccountForm.description = account.desc
-      editAccountForm.expect_rate_of_return = account.expect_rate_of_return
-      editAccountForm.expect_total_money = account.expect_total
-      editAccountForm.per_part_money = account.per_part
+      editAccount.value = account
+      console.log(editAccount.value)
       showEditAccountDialog.value = true
     }
 
@@ -200,10 +168,10 @@ export default defineComponent({
       getList,
       showEditAccountDialog,
       openEditAccountDialog,
-      editAccountForm,
-      onEditAccount,
+      editSuccess,
       onDeleteAccount,
-      refreshData
+      refreshData,
+      editAccount
     }
   }
 })

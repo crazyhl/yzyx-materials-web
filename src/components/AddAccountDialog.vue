@@ -27,7 +27,7 @@ import { AddAccountForm, addAccount } from '../api/account'
 import { successNotify } from 'src/utils/notify'
 
 export default defineComponent({
-  name: 'AddDialogDialog',
+  name: 'AddAccountDialog',
   props: {
     showAddAccountDialog: {
       type: Boolean,
