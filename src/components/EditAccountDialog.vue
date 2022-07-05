@@ -61,8 +61,6 @@ export default defineComponent({
       editAccountForm.expect_rate_of_return = account.value.expect_rate_of_return
       editAccountForm.expect_total_money = account.value.expect_total
       editAccountForm.per_part_money = account.value.per_part
-      console.log(props.showEditAccountDialog)
-      console.log(props.account)
     })
 
     const onEditAccount = async () => {
@@ -76,6 +74,8 @@ export default defineComponent({
           editAccountForm.per_part_money = 0
           editAccountForm.expect_total_money = 0
           editAccountForm.id = 0
+          context.emit('editSuccess', data.data.data)
+          context.emit('closeDialog')
         }
       })
     }
