@@ -74,8 +74,6 @@ export default defineComponent({
     })
 
     const refreshData = () => {
-      console.log('call refreshData')
-      showAddAccountDialog.value = false
       tablePagination.value.page = 1
       getList({
         pagination: tablePagination.value

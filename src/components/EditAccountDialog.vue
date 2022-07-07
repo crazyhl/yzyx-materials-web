@@ -22,7 +22,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, onUpdated, PropType, reactive, toRefs } from 'vue'
+import { defineComponent, onUpdated, PropType, reactive, toRefs } from 'vue'
 import { Account, EditAccountForm, editAccount } from '../api/account'
 import { successNotify } from 'src/utils/notify'
 
@@ -48,10 +48,6 @@ export default defineComponent({
       expect_rate_of_return: 0,
       per_part_money: 0,
       expect_total_money: 0
-    })
-
-    onMounted(() => {
-      console.log('aaaaaa')
     })
 
     onUpdated(() => {
