@@ -12,8 +12,16 @@
         :loading="breedListLoading"
         v-model:pagination="tablePagination"
         :rows-per-page-options="[10]"
+        :filter="filter"
         @request="getList"
       >
+      <template v-slot:top-right>
+        <q-input borderless dense debounce="300" v-model="filter" placeholder="Search">
+          <template v-slot:append>
+            <q-icon name="search" />
+          </template>
+        </q-input>
+      </template>
       <template v-slot:body-cell-value="props">
         <q-td :props="props">
           <div>
@@ -86,6 +94,8 @@ export default defineComponent({
 
     const breedListData = ref<Breed[]>([])
     const breedListLoading = ref(false)
+    // 品种表格接收搜索的字段
+    const filter = ref('')
 
     const editBreed = ref<Breed>({
       id: 0,
@@ -103,7 +113,8 @@ export default defineComponent({
     const refreshData = () => {
       tablePagination.value.page = 1
       getList({
-        pagination: tablePagination.value
+        pagination: tablePagination.value,
+        filter: undefined
       })
     }
 
@@ -177,10 +188,11 @@ export default defineComponent({
       descending: false
     })
 
-    const getList = async (props: {pagination: {sortBy: string, descending: boolean, page: number, rowsPerPage: number }}) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const getList = async (props: {pagination: {sortBy: string, descending: boolean, page: number, rowsPerPage: number }, filter: string | any | undefined}) => {
       breedListLoading.value = true
       const { page } = props.pagination
-      const { data } = await breedList(page)
+      const { data } = await breedList(page, props.filter)
       breedListLoading.value = false
       breedListData.value = data.data.data
       // 更新分页数据
@@ -197,7 +209,8 @@ export default defineComponent({
     onMounted(() => {
       // get initial data from server (1st page)
       getList({
-        pagination: tablePagination.value
+        pagination: tablePagination.value,
+        filter: filter.value
       })
     })
 
@@ -215,7 +228,8 @@ export default defineComponent({
       editSuccess,
       onDeleteAccount,
       openUpdateBreedNetValueDialog,
-      showUpdateBreedNetValueDialog
+      showUpdateBreedNetValueDialog,
+      filter
     }
   }
 })

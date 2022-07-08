@@ -61,8 +61,8 @@ export interface BreedList {
 }
 
 // 账户列表
-const breedList = (page: number) => {
-  return api.get<RequestResponse<BreedList>>('/breed/list?p=' + page)
+const breedList = (page: number, filter: string) => {
+  return api.get<RequestResponse<BreedList>>('/breed/list?p=' + page + '&filter=' + filter)
 }
 
 export { addBreed, breedList, editBreed, deleteBreed, editBreedNetValue }
