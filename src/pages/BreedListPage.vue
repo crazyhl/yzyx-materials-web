@@ -1,9 +1,9 @@
 <template>
-  <q-page class="column">
-    <div class="q-pa-md row justify-end">
+  <q-page class="column q-pa-md">
+    <div class="row justify-end">
       <q-btn color="primary" label="添加品种" @click="showAddBreedDialog = true" />
     </div>
-    <div class="q-pa-md">
+    <div>
       <q-table
         title="品种列表"
         :rows="breedListData"

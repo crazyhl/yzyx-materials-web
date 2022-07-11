@@ -15,7 +15,16 @@
         <q-chip v-if="accountUpdateTimeStr !== ''">修改：{{accountUpdateTimeStr}}</q-chip>
 
       </q-card-section>
+      <q-card-actions>
+        <q-btn flat color="primary">
+          编辑
+        </q-btn>
+        <q-btn flat color="primary">
+          绑定品种
+        </q-btn>
+      </q-card-actions>
     </q-card>
+    下面就是品种列表了
   </div>
 </template>
 <script setup lang="ts">

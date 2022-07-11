@@ -1,9 +1,9 @@
 <template>
-  <q-page class="column">
-    <div class="q-pa-md row justify-end">
+  <q-page class="column q-pa-md">
+    <div class="row justify-end">
       <q-btn color="primary" label="添加账户" @click="showAddAccountDialog = true" />
     </div>
-    <div class="q-pa-md">
+    <div >
       <q-table
         grid
         title="账户列表"
