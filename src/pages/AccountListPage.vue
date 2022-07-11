@@ -21,8 +21,9 @@
             <q-list dense>
               <q-item v-for="col in props.cols" :key="col.name">
                 <div v-if="col.name=='action'" style="width: 100%;" class="q-pa-sm row justify-around">
-                  <q-btn @click="openEditAccountDialog(col.value)">编辑{{col.value.id}}</q-btn>
-                  <q-btn @click="onDeleteAccount(col.value)" color="red-7">删除{{col.value.id}}</q-btn>
+                  <q-btn style="color:blue-grey-7;" @click="openDetail(col.value)">详情</q-btn>
+                  <q-btn @click="openEditAccountDialog(col.value)">编辑</q-btn>
+                  <q-btn @click="onDeleteAccount(col.value)" color="red-7">删除</q-btn>
                 </div>
                 <template v-else>
                   <q-item-section>
@@ -50,6 +51,8 @@ import { Account, accountList, deleteAccount } from '../api/account'
 import dayjs from 'dayjs'
 import AddAccountDialog from 'src/components/AddAccountDialog.vue'
 import EditAccountDialog from 'src/components/EditAccountDialog.vue'
+import { useRouter } from 'vue-router'
+import { useAccountDetailStore } from 'src/stores/account-detail-store'
 
 export default defineComponent({
   name: 'AccountListPage',
@@ -96,6 +99,14 @@ export default defineComponent({
           item.total = account.total
         }
       })
+    }
+
+    const router = useRouter()
+    const accDetailStore = useAccountDetailStore()
+    // 打开详情
+    const openDetail = (account: Account) => {
+      accDetailStore.set(account)
+      router.push({ name: 'AccountDetail', params: { id: account.id } })
     }
 
     const onDeleteAccount = async (account: Account) => {
@@ -169,7 +180,8 @@ export default defineComponent({
       editSuccess,
       onDeleteAccount,
       refreshData,
-      editAccount
+      editAccount,
+      openDetail
     }
   }
 })

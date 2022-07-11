@@ -48,6 +48,11 @@ const deleteAccount = (id: number) => {
   return api.delete<RequestResponse<Account>>('/account/delete/' + id)
 }
 
+// 账户详情
+const detailAccount = (id: number) => {
+  return api.get<RequestResponse<Account>>('/account/' + id)
+}
+
 export interface AccountList {
   data: Account[];
   count: number;
@@ -58,4 +63,4 @@ const accountList = (page: number) => {
   return api.get<RequestResponse<AccountList>>('/account/list?p=' + page)
 }
 
-export { addAccount, accountList, editAccount, deleteAccount }
+export { addAccount, accountList, editAccount, deleteAccount, detailAccount }
