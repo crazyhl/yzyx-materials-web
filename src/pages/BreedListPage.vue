@@ -3,7 +3,7 @@
     <div class="row justify-end">
       <q-btn color="primary" label="添加品种" @click="showAddBreedDialog = true" />
     </div>
-    <div>
+    <div class="q-mt-md">
       <q-table
         title="品种列表"
         :rows="breedListData"
