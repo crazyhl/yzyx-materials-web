@@ -120,7 +120,6 @@ export default defineComponent({
 
     const openEditAccountDialog = (account: Account) => {
       editAccount.value = account
-      console.log(editAccount.value)
       showEditAccountDialog.value = true
     }
 

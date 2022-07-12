@@ -16,7 +16,7 @@
 
       </q-card-section>
       <q-card-actions>
-        <q-btn flat color="primary">
+        <q-btn flat color="primary"  @click="openEditAccountDialog(account)">
           编辑
         </q-btn>
         <q-btn flat color="primary">
@@ -26,6 +26,7 @@
     </q-card>
     下面就是品种列表了
   </div>
+  <edit-account-dialog :show-edit-account-dialog="showEditAccountDialog" @close-dialog="showEditAccountDialog = false" @edit-success="editSuccess" :account="account" />
 </template>
 <script setup lang="ts">
 import dayjs from 'dayjs'
@@ -33,6 +34,7 @@ import { useAccountDetailStore } from 'src/stores/account-detail-store'
 import { ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { Account, detailAccount } from '../api/account'
+import EditAccountDialog from 'src/components/EditAccountDialog.vue'
 
 const formatFields = (account: Account) => {
   accountCreateTimeStr.value = dayjs.unix(account.create_at).format('YYYY-MM-DD')
@@ -72,6 +74,16 @@ if (account.value.id === 0) {
       account.value = data.data
       formatFields(account.value)
     })
+}
+
+const showEditAccountDialog = ref(false)
+
+const openEditAccountDialog = () => {
+  showEditAccountDialog.value = true
+}
+
+const editSuccess = (acc: Account) => {
+  account.value = acc
 }
 
 </script>
