@@ -52,7 +52,6 @@ import dayjs from 'dayjs'
 import AddAccountDialog from 'src/components/AddAccountDialog.vue'
 import EditAccountDialog from 'src/components/EditAccountDialog.vue'
 import { useRouter } from 'vue-router'
-import { useAccountDetailStore } from 'src/stores/account-detail-store'
 
 export default defineComponent({
   name: 'AccountListPage',
@@ -73,7 +72,8 @@ export default defineComponent({
       expect_rate_of_return: 0,
       rate_of_return: 0,
       per_part: 0,
-      profit_amount: 0
+      profit_amount: 0,
+      breeds: []
     })
 
     const refreshData = () => {
@@ -102,10 +102,8 @@ export default defineComponent({
     }
 
     const router = useRouter()
-    const accDetailStore = useAccountDetailStore()
     // 打开详情
     const openDetail = (account: Account) => {
-      accDetailStore.set(account)
       router.push({ name: 'AccountDetail', params: { id: account.id } })
     }
 

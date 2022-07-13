@@ -30,7 +30,6 @@
 </template>
 <script setup lang="ts">
 import dayjs from 'dayjs'
-import { useAccountDetailStore } from 'src/stores/account-detail-store'
 import { ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { Account, detailAccount } from '../api/account'
@@ -59,20 +58,13 @@ const accountCreateTimeStr = ref('')
 const accountUpdateTimeStr = ref('')
 const accountProfitAmountColor = ref('')
 
-const accDetailStore = useAccountDetailStore()
-account.value = accDetailStore.account
-formatFields(account.value)
-
-// 如果从 store 获取的数据为空，就去服务端获取数据一下，方式刷新后没数据
-if (account.value.id === 0) {
-  const route = useRoute()
-  detailAccount(parseInt(route.params.id.toString()))
-    .then((res) => {
-      const data = res.data
-      account.value = data.data
-      formatFields(account.value)
-    })
-}
+const route = useRoute()
+detailAccount(parseInt(route.params.id.toString()))
+  .then((res) => {
+    const data = res.data
+    account.value = data.data
+    formatFields(account.value)
+  })
 
 const showEditAccountDialog = ref(false)
 

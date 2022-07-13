@@ -1,6 +1,7 @@
 import { api } from '../boot/axios'
 import qs from 'qs'
 import { RequestResponse } from './response'
+import { Breed } from './breed'
 
 export interface AddAccountForm { // 添加账户 model
   name: string; // 账户名称
@@ -31,6 +32,7 @@ export interface Account {
   rate_of_return: number;
   per_part: number;
   profit_amount: number;
+  breeds?: Breed[];
 }
 
 // 添加账户
