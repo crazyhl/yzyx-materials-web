@@ -82,6 +82,7 @@ const openEditAccountDialog = () => {
 
 const editSuccess = (acc: Account) => {
   account.value = acc
+  formatFields(account.value)
 }
 
 </script>
