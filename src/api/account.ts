@@ -65,4 +65,11 @@ const accountList = (page: number) => {
   return api.get<RequestResponse<AccountList>>('/account/list?p=' + page)
 }
 
-export { addAccount, accountList, editAccount, deleteAccount, detailAccount }
+// 绑定品种
+const accountBindBreed = (accountId: number, breedId: number) => {
+  return api.post<RequestResponse<Breed>>('/account/' + accountId + '/bindBreed', {
+    id: breedId
+  })
+}
+
+export { addAccount, accountList, editAccount, deleteAccount, detailAccount, accountBindBreed }

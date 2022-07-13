@@ -6,7 +6,7 @@
       </q-card-section>
 
       <q-card-section class="q-pt-none">
-        <q-select outlined v-model="selectBreed" :options="options" label="品种列表" />
+        <q-select outlined v-model="selectBreed" :options="options" option-disable="cannotSelect" label="品种列表" />
       </q-card-section>
 
       <q-card-actions align="right" class="text-primary">
@@ -18,8 +18,9 @@
 </template>
 
 <script setup lang="ts">
-import { Account } from 'src/api/account'
+import { Account, accountBindBreed } from 'src/api/account'
 import { allBreedList, Breed } from 'src/api/breed'
+import { errorNotify } from 'src/utils/notify'
 import { PropType, ref, toRefs } from 'vue'
 
 const props = defineProps({
@@ -35,10 +36,19 @@ const props = defineProps({
 const { showDialog } = toRefs(props)
 
 const show = showDialog // 是否显示对话框
-const selectBreed = ref(null)
+const selectBreed = ref<{
+  label: string,
+  value: number,
+  cannotSelect: boolean
+}>({
+  label: '',
+  value: 0,
+  cannotSelect: false
+})
 const options = ref<{
   label: string,
-  value: string
+  value: number,
+  cannotSelect: boolean
 }[]>([])
 
 const emit = defineEmits(['bindSuccess', 'closeDialog'])
@@ -49,15 +59,31 @@ const onCloseAddDialog = () => {
 
 const onBindBreed = () => {
   console.log('selectBreed', selectBreed.value)
-  emit('closeDialog')
-  emit('bindSuccess')
+  if (selectBreed.value.value === 0) {
+    errorNotify('请选择品种', {})
+    return
+  }
+  accountBindBreed(props.account.id, selectBreed.value.value).then(res => {
+    console.log(res)
+    emit('closeDialog')
+    emit('bindSuccess')
+  })
 }
 
 allBreedList().then(res => {
   console.log('res', res.data.data)
   res.data.data.forEach((element: Breed) => {
-    options.value.push({ label: element.name + '(' + element.code + ')', value: element.id.toString() })
+    let cannNotSelect = false
+    props.account.breeds?.every((breed: Breed) => {
+      if (breed.id === element.id) {
+        cannNotSelect = true
+        return true
+      }
+      return false
+    })
+    options.value.push({ label: element.name + '(' + element.code + ')', value: element.id, cannotSelect: cannNotSelect })
   })
+  console.log(options.value)
 })
 
 </script>

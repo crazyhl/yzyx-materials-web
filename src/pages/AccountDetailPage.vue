@@ -66,6 +66,7 @@ detailAccount(parseInt(route.params.id.toString()))
   .then((res) => {
     const data = res.data
     account.value = data.data
+    console.log(account.value)
     formatFields(account.value)
   })
 
