@@ -60,14 +60,12 @@ const accountUpdateTimeStr = ref('')
 const accountProfitAmountColor = ref('')
 
 const accDetailStore = useAccountDetailStore()
-console.log(accDetailStore.account)
 account.value = accDetailStore.account
 formatFields(account.value)
 
 // 如果从 store 获取的数据为空，就去服务端获取数据一下，方式刷新后没数据
 if (account.value.id === 0) {
   const route = useRoute()
-  console.log(route.params.id)
   detailAccount(parseInt(route.params.id.toString()))
     .then((res) => {
       const data = res.data
