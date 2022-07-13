@@ -19,7 +19,7 @@
         <q-btn flat color="primary"  @click="openEditAccountDialog()">
           编辑
         </q-btn>
-        <q-btn flat color="primary">
+        <q-btn flat color="primary" @click="showAccountBindBreedDialog = true">
           绑定品种
         </q-btn>
       </q-card-actions>
@@ -27,6 +27,7 @@
     下面就是品种列表了
   </div>
   <edit-account-dialog :show-edit-account-dialog="showEditAccountDialog" @close-dialog="showEditAccountDialog = false" @edit-success="editSuccess" :account="account" />
+  <account-bind-breed-dialog :show-dialog="showAccountBindBreedDialog" :account="account" @close-dialog="showAccountBindBreedDialog = false" @bind-success="bindSuccess" />
 </template>
 <script setup lang="ts">
 import dayjs from 'dayjs'
@@ -34,6 +35,7 @@ import { ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { Account, detailAccount } from '../api/account'
 import EditAccountDialog from 'src/components/EditAccountDialog.vue'
+import AccountBindBreedDialog from 'src/components/AccountBindBreedDialog.vue'
 
 const formatFields = (account: Account) => {
   accountCreateTimeStr.value = dayjs.unix(account.create_at).format('YYYY-MM-DD')
@@ -57,6 +59,7 @@ const account = ref<Account>({
 const accountCreateTimeStr = ref('')
 const accountUpdateTimeStr = ref('')
 const accountProfitAmountColor = ref('')
+const showAccountBindBreedDialog = ref(false)
 
 const route = useRoute()
 detailAccount(parseInt(route.params.id.toString()))
@@ -75,6 +78,10 @@ const openEditAccountDialog = () => {
 const editSuccess = (acc: Account) => {
   account.value = acc
   formatFields(account.value)
+}
+
+const bindSuccess = () => {
+  console.log('aaaaaa')
 }
 
 </script>

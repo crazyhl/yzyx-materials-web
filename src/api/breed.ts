@@ -65,12 +65,8 @@ const breedList = (page: number, filter: string) => {
   return api.get<RequestResponse<BreedList>>('/breed/list?p=' + page + '&filter=' + filter)
 }
 
-export interface AllBreedList {
-  data: Breed[];
-}
-
 const allBreedList = () => {
-  return api.get<RequestResponse<AllBreedList>>('/breed/allList')
+  return api.get<RequestResponse<Array<Breed>>>('/breed/allList')
 }
 
 export { addBreed, breedList, editBreed, deleteBreed, editBreedNetValue, allBreedList }
