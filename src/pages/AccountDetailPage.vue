@@ -16,7 +16,7 @@
 
       </q-card-section>
       <q-card-actions>
-        <q-btn flat color="primary"  @click="openEditAccountDialog(account)">
+        <q-btn flat color="primary"  @click="openEditAccountDialog()">
           编辑
         </q-btn>
         <q-btn flat color="primary">
