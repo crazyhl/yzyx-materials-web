@@ -141,7 +141,6 @@ const bindSuccess = (breed: AccountBreed) => {
     account.value.breeds = []
   }
   account.value.breeds.unshift(breed)
-  breedListData.value.unshift(breed)
 }
 
 const columns = [
