@@ -114,7 +114,7 @@ export default defineComponent({
       tablePagination.value.page = 1
       getList({
         pagination: tablePagination.value,
-        filter: undefined
+        filter: ''
       })
     }
 

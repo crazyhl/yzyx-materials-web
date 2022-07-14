@@ -85,7 +85,7 @@
 import dayjs from 'dayjs'
 import { ref } from 'vue'
 import { useRoute } from 'vue-router'
-import { Account, detailAccount } from '../api/account'
+import { Account, AccountBreed, detailAccount } from '../api/account'
 import EditAccountDialog from 'src/components/EditAccountDialog.vue'
 import AccountBindBreedDialog from 'src/components/AccountBindBreedDialog.vue'
 import { Breed } from 'src/api/breed'
@@ -136,7 +136,7 @@ const editSuccess = (acc: Account) => {
   formatFields(account.value)
 }
 
-const bindSuccess = (breed: Breed) => {
+const bindSuccess = (breed: AccountBreed) => {
   if (account.value.breeds === undefined) {
     account.value.breeds = []
   }
@@ -145,22 +145,22 @@ const bindSuccess = (breed: Breed) => {
 }
 
 const columns = [
-  { name: 'code', label: '代码', field: 'code', sortable: false },
-  { name: 'name', label: '名称', field: 'name', format: (val: string) => `${val}`, sortable: false },
+  { name: 'code', label: '代码', field: (row:AccountBreed) => row.breed.code, sortable: false },
+  { name: 'name', label: '名称', field: (row:AccountBreed) => row.breed.name, format: (val: string) => `${val}`, sortable: false },
   {
     name: 'value',
     label: '成本/净值',
-    field: (row:Breed) => row,
+    field: (row:AccountBreed) => row,
     sortable: false
   },
   { name: 'total_count', label: '总份数', field: 'total_count', sortable: false },
-  { name: 'profit', label: '利润', field: (row:Breed) => row, sortable: false },
-  { name: 'total_value', label: '总成本/总净值', field: (row:Breed) => row, sortable: false },
+  { name: 'profit', label: '利润', field: (row:AccountBreed) => row, sortable: false },
+  { name: 'total_value', label: '总成本/总净值', field: (row:AccountBreed) => row, sortable: false },
   {
     name: 'time',
     label: '添加/更新时间',
-    field: (row:Breed) => row,
-    format: (val: Breed) => {
+    field: (row:AccountBreed) => row,
+    format: (val: AccountBreed) => {
       const createTimeStr = dayjs.unix(val.create_at).format('YYYY-MM-DD')
       const updateTimeStr = dayjs.unix(val.update_at).format('YYYY-MM-DD')
       return createTimeStr + '/' + updateTimeStr
@@ -170,11 +170,11 @@ const columns = [
   {
     name: 'action',
     label: '操作',
-    field: (row: Breed) => row,
+    field: (row: AccountBreed) => row,
     sortable: false
   }
 ]
 
-const breedListData = ref<Breed[]>([])
+const breedListData = ref<AccountBreed[]>([])
 
 </script>

@@ -18,7 +18,7 @@
 </template>
 
 <script setup lang="ts">
-import { Account, accountBindBreed } from 'src/api/account'
+import { Account, accountBindBreed, AccountBreed } from 'src/api/account'
 import { allBreedList, Breed } from 'src/api/breed'
 import { errorNotify } from 'src/utils/notify'
 import { PropType, ref, toRefs, watch } from 'vue'
@@ -76,8 +76,8 @@ const refreshOptions = (breeds: Breed[]) => {
   options.value = []
   breeds.forEach((element: Breed) => {
     let cannNotSelect = false
-    props.account.breeds?.forEach((breed: Breed) => {
-      if (breed.id === element.id) {
+    props.account.breeds?.forEach((breed: AccountBreed) => {
+      if (breed.breed.id === element.id) {
         cannNotSelect = true
       }
     })
