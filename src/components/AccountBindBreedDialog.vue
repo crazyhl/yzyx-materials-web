@@ -21,7 +21,7 @@
 import { Account, accountBindBreed } from 'src/api/account'
 import { allBreedList, Breed } from 'src/api/breed'
 import { errorNotify } from 'src/utils/notify'
-import { PropType, ref, toRefs } from 'vue'
+import { PropType, ref, toRefs, watch } from 'vue'
 
 const props = defineProps({
   showDialog: {
@@ -58,32 +58,44 @@ const onCloseAddDialog = () => {
 }
 
 const onBindBreed = () => {
-  console.log('selectBreed', selectBreed.value)
   if (selectBreed.value.value === 0) {
     errorNotify('请选择品种', {})
     return
   }
   accountBindBreed(props.account.id, selectBreed.value.value).then(res => {
-    console.log(res)
+    selectBreed.value.label = ''
+    selectBreed.value.value = 0
     emit('closeDialog')
-    emit('bindSuccess')
+    emit('bindSuccess', res.data.data)
   })
 }
 
-allBreedList().then(res => {
-  console.log('res', res.data.data)
-  res.data.data.forEach((element: Breed) => {
+const allBreeds = ref<Breed[]>()
+
+const refreshOptions = (breeds: Breed[]) => {
+  options.value = []
+  breeds.forEach((element: Breed) => {
     let cannNotSelect = false
-    props.account.breeds?.every((breed: Breed) => {
+    props.account.breeds?.forEach((breed: Breed) => {
       if (breed.id === element.id) {
         cannNotSelect = true
-        return true
       }
-      return false
     })
     options.value.push({ label: element.name + '(' + element.code + ')', value: element.id, cannotSelect: cannNotSelect })
   })
   console.log(options.value)
+}
+
+watch(() => props.showDialog, () => {
+  console.log('account', props.account)
+  if (allBreeds.value === undefined) {
+    allBreedList().then(res => {
+      allBreeds.value = res.data.data
+      refreshOptions(allBreeds.value)
+    })
+  } else {
+    refreshOptions(allBreeds.value)
+  }
 })
 
 </script>

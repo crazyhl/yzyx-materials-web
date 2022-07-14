@@ -119,7 +119,6 @@ detailAccount(parseInt(route.params.id.toString()))
   .then((res) => {
     const data = res.data
     account.value = data.data
-    console.log(account.value)
     formatFields(account.value)
     if (data.data.breeds) {
       breedListData.value = data.data.breeds
@@ -137,8 +136,12 @@ const editSuccess = (acc: Account) => {
   formatFields(account.value)
 }
 
-const bindSuccess = () => {
-  console.log('aaaaaa')
+const bindSuccess = (breed: Breed) => {
+  if (account.value.breeds === undefined) {
+    account.value.breeds = []
+  }
+  account.value.breeds.unshift(breed)
+  breedListData.value.unshift(breed)
 }
 
 const columns = [
