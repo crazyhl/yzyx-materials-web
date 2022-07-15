@@ -60,10 +60,10 @@
         <q-td :props="props">
           <div>
             <q-badge v-if="props.value.total_cost > props.value.breed.net_value*props.value.total_count" color="green">
-            {{props.value.total_cost - props.value.breed.net_value*props.value.total_count}}
+            {{props.value.breed.net_value*props.value.total_count - props.value.total_cost}}
             </q-badge>
             <q-badge v-else color="red">
-            {{props.value.total_cost - props.value.breed.net_value*props.value.total_count}}
+            {{props.value.breed.net_value*props.value.total_count - props.value.total_cost}}
             </q-badge>
           </div>
         </q-td>
@@ -80,7 +80,7 @@
   </div>
   <edit-account-dialog :show-edit-account-dialog="showEditAccountDialog" @close-dialog="showEditAccountDialog = false" @edit-success="editSuccess" :account="account" />
   <account-bind-breed-dialog :show-dialog="showAccountBindBreedDialog" :account="account" @close-dialog="showAccountBindBreedDialog = false" @bind-success="bindSuccess" />
-  <account-add-breed-buy-item-vue :show-dialog="showAccounAddBreedBuyItemDialog" :breed="addBuyItemBreed" @close-dialog="showAccounAddBreedBuyItemDialog = false" @add-success="onAddBuyItemSuccess" />
+  <account-add-breed-buy-item-vue :show-dialog="showAccounAddBreedBuyItemDialog" :account="account" :breed="addBuyItemBreed" @close-dialog="showAccounAddBreedBuyItemDialog = false" @add-success="onAddBuyItemSuccess" />
 </template>
 <script setup lang="ts">
 import dayjs from 'dayjs'
@@ -201,12 +201,33 @@ const addBuyItemBreed = ref<AccountBreed>({
 })
 const showAccounAddBreedBuyItemDialog = ref(false)
 
-const onAddBuyItemSuccess = () => {
-  console.log('aaaaaaaaa')
+const onAddBuyItemSuccess = (accountBreed: AccountBreed) => {
+  breedListData.value.forEach(item => {
+    if (item.id === accountBreed.id) {
+      item.id = accountBreed.id
+      item.create_at = accountBreed.create_at
+      item.update_at = accountBreed.update_at
+      item.breed = {
+        id: accountBreed.breed.id,
+        create_at: accountBreed.breed.create_at,
+        update_at: accountBreed.breed.update_at,
+        code: accountBreed.breed.code,
+        name: accountBreed.breed.name,
+        net_value: accountBreed.breed.net_value,
+        cost: accountBreed.breed.cost,
+        total_count: accountBreed.breed.total_count,
+        total_cost: accountBreed.breed.total_cost,
+        total_net_value: accountBreed.breed.total_net_value
+      }
+      item.cost = accountBreed.cost
+      item.total_count = accountBreed.total_count
+      item.total_cost = accountBreed.total_cost
+      item.total_account_per_part_count = accountBreed.total_account_per_part_count
+    }
+  })
 }
 
 const openAddBuyItemDialog = (breed: AccountBreed) => {
-  console.log(breed)
   addBuyItemBreed.value = breed
   showAccounAddBreedBuyItemDialog.value = true
 }

@@ -41,7 +41,7 @@
           label="单价"
         />
         <q-input
-          v-model.number="totalCount"
+          v-model.number="count"
           type="number"
           outlined
           class="q-mt-md"
@@ -59,7 +59,7 @@
 
 <script setup lang="ts">
 import dayjs from 'dayjs'
-import { AccountBreed } from 'src/api/account'
+import { Account, AccountBreed, acountAddBreedBuyItem } from 'src/api/account'
 import { PropType, ref, toRefs, watch } from 'vue'
 
 const props = defineProps({
@@ -69,6 +69,10 @@ const props = defineProps({
   },
   breed: {
     type: Object as PropType<AccountBreed>,
+    required: true
+  },
+  account: {
+    type: Object as PropType<Account>,
     required: true
   }
 })
@@ -83,19 +87,26 @@ const onCloseAddDialog = () => {
 }
 
 const onAdd = () => {
-  emit('closeDialog')
-  emit('addSuccess')
+  acountAddBreedBuyItem(
+    props.account.id,
+    breedId.value,
+    dayjs(date.value, 'YYYY-MM-DD HH:mm').unix(),
+    cost.value,
+    count.value
+  ).then(res => {
+    emit('closeDialog')
+    emit('addSuccess', res.data.data)
+  })
 }
 
 const breedId = ref(0)
 
 watch(() => props.breed, (breed: AccountBreed) => {
-  console.log(breed)
   breedId.value = breed.breed.id
 })
 
 const date = ref(dayjs().format('YYYY-MM-DD HH:mm'))
 const cost = ref(0)
-const totalCount = ref(0)
+const count = ref(0)
 
 </script>

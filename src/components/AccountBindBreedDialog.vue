@@ -83,11 +83,9 @@ const refreshOptions = (breeds: Breed[]) => {
     })
     options.value.push({ label: element.name + '(' + element.code + ')', value: element.id, cannotSelect: cannNotSelect })
   })
-  console.log(options.value)
 }
 
 watch(() => props.showDialog, () => {
-  console.log('account', props.account)
   if (allBreeds.value === undefined) {
     allBreedList().then(res => {
       allBreeds.value = res.data.data

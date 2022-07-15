@@ -82,4 +82,14 @@ const accountBindBreed = (accountId: number, breedId: number) => {
   })
 }
 
-export { addAccount, accountList, editAccount, deleteAccount, detailAccount, accountBindBreed }
+// 绑定品种
+const acountAddBreedBuyItem = (accountId: number, breedId: number, createAt: number, cost: number, count: number) => {
+  return api.post<RequestResponse<Breed>>('/account/' + accountId + '/addBreedBuyItem', {
+    id: breedId,
+    create_at: createAt,
+    cost,
+    count
+  })
+}
+
+export { addAccount, accountList, editAccount, deleteAccount, detailAccount, accountBindBreed, acountAddBreedBuyItem }
