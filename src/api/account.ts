@@ -28,7 +28,6 @@ export interface AccountBreed {
   cost: number;
   total_count: number;
   total_cost: number;
-  total_net_value: number;
   total_account_per_part_count: number;
 }
 export interface Account {

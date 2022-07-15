@@ -36,10 +36,10 @@
         <q-td :props="props">
           <div>
             <q-badge v-if="props.value.cost > props.value.net_value" color="green">
-            {{props.value.cost}}/{{props.value.net_value}}
+            {{props.value.cost}}/{{props.value.breed.net_value}}
             </q-badge>
             <q-badge v-else color="red">
-            {{props.value.cost}}/{{props.value.net_value}}
+            {{props.value.cost}}/{{props.value.breed.net_value}}
             </q-badge>
           </div>
         </q-td>
@@ -47,11 +47,11 @@
       <template v-slot:body-cell-total_value="props">
         <q-td :props="props">
           <div>
-            <q-badge v-if="props.value.total_cost > props.value.total_net_value" color="green">
-            {{props.value.total_cost}}/{{props.value.total_net_value}}
+            <q-badge v-if="props.value.total_cost > props.value.breed.net_value*props.value.total_count" color="green">
+            {{props.value.total_cost}}/{{props.value.breed.net_value*props.value.total_count}}
             </q-badge>
             <q-badge v-else color="red">
-            {{props.value.total_cost}}/{{props.value.total_net_value}}
+            {{props.value.total_cost}}/{{props.value.breed.net_value*props.value.total_count}}
             </q-badge>
           </div>
         </q-td>
@@ -59,11 +59,11 @@
       <template v-slot:body-cell-profit="props">
         <q-td :props="props">
           <div>
-            <q-badge v-if="props.value.total_cost > props.value.total_net_value" color="green">
-            {{props.value.total_cost - props.value.total_net_value}}
+            <q-badge v-if="props.value.total_cost > props.value.breed.net_value*props.value.total_count" color="green">
+            {{props.value.total_cost - props.value.breed.net_value*props.value.total_count}}
             </q-badge>
             <q-badge v-else color="red">
-            {{props.value.total_cost - props.value.total_net_value}}
+            {{props.value.total_cost - props.value.breed.net_value*props.value.total_count}}
             </q-badge>
           </div>
         </q-td>
@@ -88,7 +88,6 @@ import { useRoute } from 'vue-router'
 import { Account, AccountBreed, detailAccount } from '../api/account'
 import EditAccountDialog from 'src/components/EditAccountDialog.vue'
 import AccountBindBreedDialog from 'src/components/AccountBindBreedDialog.vue'
-import { Breed } from 'src/api/breed'
 
 const formatFields = (account: Account) => {
   accountCreateTimeStr.value = dayjs.unix(account.create_at).format('YYYY-MM-DD')
