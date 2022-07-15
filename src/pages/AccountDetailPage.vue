@@ -71,7 +71,7 @@
       <template v-slot:body-cell-action="props">
         <q-td :props="props">
           <div>
-            记一笔位置
+            <q-btn color="primary" label="记一笔" @click="openAddBuyItemDialog(props.value)" />
           </div>
         </q-td>
       </template>
@@ -80,6 +80,7 @@
   </div>
   <edit-account-dialog :show-edit-account-dialog="showEditAccountDialog" @close-dialog="showEditAccountDialog = false" @edit-success="editSuccess" :account="account" />
   <account-bind-breed-dialog :show-dialog="showAccountBindBreedDialog" :account="account" @close-dialog="showAccountBindBreedDialog = false" @bind-success="bindSuccess" />
+  <account-add-breed-buy-item-vue :show-dialog="showAccounAddBreedBuyItemDialog" :breed="addBuyItemBreed" @close-dialog="showAccounAddBreedBuyItemDialog = false" @add-success="onAddBuyItemSuccess" />
 </template>
 <script setup lang="ts">
 import dayjs from 'dayjs'
@@ -88,6 +89,7 @@ import { useRoute } from 'vue-router'
 import { Account, AccountBreed, detailAccount } from '../api/account'
 import EditAccountDialog from 'src/components/EditAccountDialog.vue'
 import AccountBindBreedDialog from 'src/components/AccountBindBreedDialog.vue'
+import AccountAddBreedBuyItemVue from 'src/components/AccountAddBreedBuyItem.vue'
 
 const formatFields = (account: Account) => {
   accountCreateTimeStr.value = dayjs.unix(account.create_at).format('YYYY-MM-DD')
@@ -175,5 +177,38 @@ const columns = [
 ]
 
 const breedListData = ref<AccountBreed[]>([])
+
+const addBuyItemBreed = ref<AccountBreed>({
+  id: 0,
+  create_at: 0,
+  update_at: 0,
+  breed: {
+    id: 0,
+    create_at: 0,
+    update_at: 0,
+    code: '',
+    name: '',
+    net_value: 0,
+    cost: 0,
+    total_count: 0,
+    total_cost: 0,
+    total_net_value: 0
+  },
+  cost: 0,
+  total_count: 0,
+  total_cost: 0,
+  total_account_per_part_count: 0
+})
+const showAccounAddBreedBuyItemDialog = ref(false)
+
+const onAddBuyItemSuccess = () => {
+  console.log('aaaaaaaaa')
+}
+
+const openAddBuyItemDialog = (breed: AccountBreed) => {
+  console.log(breed)
+  addBuyItemBreed.value = breed
+  showAccounAddBreedBuyItemDialog.value = true
+}
 
 </script>
