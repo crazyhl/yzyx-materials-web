@@ -120,9 +120,10 @@ detailAccount(parseInt(route.params.id.toString()))
     const data = res.data
     account.value = data.data
     formatFields(account.value)
-    if (data.data.breeds) {
-      breedListData.value = data.data.breeds
+    if (account.value.breeds === undefined) {
+      account.value.breeds = []
     }
+    breedListData.value = account.value.breeds
   })
 
 const showEditAccountDialog = ref(false)
