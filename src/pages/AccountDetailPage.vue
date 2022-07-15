@@ -202,7 +202,7 @@ const addBuyItemBreed = ref<AccountBreed>({
 const showAccounAddBreedBuyItemDialog = ref(false)
 
 const onAddBuyItemSuccess = (accountBreed: AccountBreed) => {
-  breedListData.value.forEach(item => {
+  account.value.breeds?.forEach(item => {
     if (item.id === accountBreed.id) {
       item.id = accountBreed.id
       item.create_at = accountBreed.create_at
