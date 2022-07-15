@@ -50,10 +50,10 @@
         <q-td :props="props">
           <div>
             <q-badge v-if="props.value.total_cost > props.value.total_net_value" color="green">
-            {{props.value.total_cost - props.value.total_net_value}}
+            {{props.value.total_net_value - props.value.total_cost}}
             </q-badge>
             <q-badge v-else color="red">
-            {{props.value.total_cost - props.value.total_net_value}}
+            {{props.value.total_net_value - props.value.total_cost}}
             </q-badge>
           </div>
         </q-td>
