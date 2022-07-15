@@ -94,7 +94,7 @@ import AccountAddBreedBuyItemVue from 'src/components/AccountAddBreedBuyItem.vue
 const formatFields = (account: Account) => {
   accountCreateTimeStr.value = dayjs.unix(account.create_at).format('YYYY-MM-DD')
   accountUpdateTimeStr.value = dayjs.unix(account.update_at).format('YYYY-MM-DD')
-  accountProfitAmountColor.value = account.profit_amount >= 0 ? 'red' : 'greed'
+  accountProfitAmountColor.value = account.profit_amount >= 0 ? 'red' : 'green'
 }
 
 const account = ref<Account>({
@@ -155,6 +155,7 @@ const columns = [
     sortable: false
   },
   { name: 'total_count', label: '总份数', field: 'total_count', sortable: false },
+  { name: 'total_account_per_part_count', label: '对应账户份数', field: 'total_account_per_part_count', sortable: false },
   { name: 'profit', label: '利润', field: (row:AccountBreed) => row, sortable: false },
   { name: 'total_value', label: '总成本/总净值', field: (row:AccountBreed) => row, sortable: false },
   {
@@ -194,6 +195,19 @@ const addBuyItemBreed = ref<AccountBreed>({
     total_cost: 0,
     total_net_value: 0
   },
+  account: {
+    id: 0,
+    create_at: 0,
+    update_at: 0,
+    name: '',
+    desc: '',
+    total: 0,
+    expect_total: 0,
+    expect_rate_of_return: 0,
+    rate_of_return: 0,
+    per_part: 0,
+    profit_amount: 0
+  },
   cost: 0,
   total_count: 0,
   total_cost: 0,
@@ -202,6 +216,9 @@ const addBuyItemBreed = ref<AccountBreed>({
 const showAccounAddBreedBuyItemDialog = ref(false)
 
 const onAddBuyItemSuccess = (accountBreed: AccountBreed) => {
+  account.value.total = accountBreed.account.total
+  account.value.rate_of_return = accountBreed.account.rate_of_return
+  account.value.profit_amount = accountBreed.account.profit_amount
   account.value.breeds?.forEach(item => {
     if (item.id === accountBreed.id) {
       item.id = accountBreed.id

@@ -20,17 +20,7 @@ export interface EditAccountForm { // 添加账户 model
   expect_rate_of_return?: number; // 预计收益率
 }
 
-export interface AccountBreed {
-  id: number;
-  create_at: number;
-  update_at: number;
-  breed: Breed;
-  cost: number;
-  total_count: number;
-  total_cost: number;
-  total_account_per_part_count: number;
-}
-export interface Account {
+export interface SimpleAccount {
   id: number;
   create_at: number;
   update_at: number;
@@ -42,6 +32,20 @@ export interface Account {
   rate_of_return: number;
   per_part: number;
   profit_amount: number;
+}
+
+export interface AccountBreed {
+  id: number;
+  create_at: number;
+  update_at: number;
+  breed: Breed;
+  account: SimpleAccount;
+  cost: number;
+  total_count: number;
+  total_cost: number;
+  total_account_per_part_count: number;
+}
+export interface Account extends SimpleAccount {
   breeds?: AccountBreed[];
 }
 
