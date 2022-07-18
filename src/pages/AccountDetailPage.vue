@@ -35,7 +35,7 @@
       <template v-slot:body-cell-value="props">
         <q-td :props="props">
           <div>
-            <q-badge v-if="props.value.cost > props.value.net_value" color="green">
+            <q-badge v-if="props.value.cost > props.value.breed.net_value" color="green">
             {{props.value.cost}}/{{props.value.breed.net_value}}
             </q-badge>
             <q-badge v-else color="red">
