@@ -47,6 +47,13 @@
           class="q-mt-md"
           label="份数"
         />
+        <q-input
+          v-model.number="fee"
+          type="number"
+          outlined
+          class="q-mt-md"
+          label="手续费"
+        />
       </q-card-section>
 
       <q-card-actions align="right" class="text-primary">
@@ -92,7 +99,8 @@ const onAdd = () => {
     breedId.value,
     dayjs(date.value, 'YYYY-MM-DD HH:mm').unix(),
     cost.value,
-    count.value
+    count.value,
+    fee.value
   ).then(res => {
     emit('closeDialog')
     emit('addSuccess', res.data.data)
@@ -108,5 +116,5 @@ watch(() => props.breed, (breed: AccountBreed) => {
 const date = ref(dayjs().format('YYYY-MM-DD HH:mm'))
 const cost = ref(0)
 const count = ref(0)
-
+const fee = ref(0)
 </script>

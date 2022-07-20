@@ -87,12 +87,13 @@ const accountBindBreed = (accountId: number, breedId: number) => {
 }
 
 // 绑定品种
-const acountAddBreedBuyItem = (accountId: number, breedId: number, createAt: number, cost: number, count: number) => {
+const acountAddBreedBuyItem = (accountId: number, breedId: number, createAt: number, cost: number, count: number, fee: number) => {
   return api.post<RequestResponse<Breed>>('/account/' + accountId + '/addBreedBuyItem', {
     id: breedId,
     create_at: createAt,
     cost,
-    count
+    count,
+    fee
   })
 }
 
