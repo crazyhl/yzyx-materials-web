@@ -97,4 +97,22 @@ const acountAddBreedBuyItem = (accountId: number, breedId: number, createAt: num
   })
 }
 
-export { addAccount, accountList, editAccount, deleteAccount, detailAccount, accountBindBreed, acountAddBreedBuyItem }
+export interface BreedBuyItem {
+  id: number;
+  create_at: number;
+  update_at: number;
+  cost: number;
+  count: number;
+  fee: number;
+  total_cost: number
+}
+export interface BreedBuyItemList {
+  data: BreedBuyItem[];
+  count: number;
+}
+
+const accountBreedBuyItemList = (page: number, accountId: number, brredId: number) => {
+  return api.get<RequestResponse<BreedBuyItemList>>('/account/' + accountId + '/breed/' + brredId + '/buyItemList?p=' + page)
+}
+
+export { addAccount, accountList, editAccount, deleteAccount, detailAccount, accountBindBreed, acountAddBreedBuyItem, accountBreedBuyItemList }

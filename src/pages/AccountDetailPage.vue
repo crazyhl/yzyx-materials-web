@@ -72,6 +72,7 @@
         <q-td :props="props">
           <div>
             <q-btn color="primary" label="记一笔" @click="openAddBuyItemDialog(props.value)" />
+            <q-btn class="q-ml-sm" label="购买记录" :to="{name:'AccountBreedBuyItemList', params: {id: account.id, breedId: props.value.breed.id}}" />
           </div>
         </q-td>
       </template>

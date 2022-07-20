@@ -27,6 +27,12 @@ const routes: RouteRecordRaw[] = [
         name: 'AccountDetail'
       },
       {
+        path: '/account/:id/breed/:breedId/buyItemList',
+        component: () => import('pages/BreedBuyItemListPage.vue'),
+        meta: { requiresAuth: true },
+        name: 'AccountBreedBuyItemList'
+      },
+      {
         path: '/breed/list',
         component: () => import('pages/BreedListPage.vue'),
         meta: { requiresAuth: true }
