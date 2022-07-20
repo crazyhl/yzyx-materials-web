@@ -81,7 +81,7 @@
   </div>
   <edit-account-dialog :show-edit-account-dialog="showEditAccountDialog" @close-dialog="showEditAccountDialog = false" @edit-success="editSuccess" :account="account" />
   <account-bind-breed-dialog :show-dialog="showAccountBindBreedDialog" :account="account" @close-dialog="showAccountBindBreedDialog = false" @bind-success="bindSuccess" />
-  <account-add-breed-buy-item-vue :show-dialog="showAccounAddBreedBuyItemDialog" :account="account" :breed="addBuyItemBreed" @close-dialog="showAccounAddBreedBuyItemDialog = false" @add-success="onAddBuyItemSuccess" />
+  <account-add-breed-buy-item :show-dialog="showAccounAddBreedBuyItemDialog" :account="account" :breed="addBuyItemBreed" @close-dialog="showAccounAddBreedBuyItemDialog = false" @add-success="onAddBuyItemSuccess" />
 </template>
 <script setup lang="ts">
 import dayjs from 'dayjs'
@@ -90,7 +90,7 @@ import { useRoute } from 'vue-router'
 import { Account, AccountBreed, detailAccount } from '../api/account'
 import EditAccountDialog from 'src/components/EditAccountDialog.vue'
 import AccountBindBreedDialog from 'src/components/AccountBindBreedDialog.vue'
-import AccountAddBreedBuyItemVue from 'src/components/AccountAddBreedBuyItem.vue'
+import AccountAddBreedBuyItem from 'src/components/AccountAddBreedBuyItem.vue'
 
 const formatFields = (account: Account) => {
   accountCreateTimeStr.value = dayjs.unix(account.create_at).format('YYYY-MM-DD')

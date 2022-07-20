@@ -15,19 +15,21 @@
       <template v-slot:body-cell-action="props">
         <q-td :props="props">
           <div>
-            actions
+            <q-btn color="primary" label="更新" @click="openUpdateBuyItemDialog(props.value)" />
           </div>
         </q-td>
       </template>
       </q-table>
     </div>
   </q-page>
+  <update-breed-buy-item :show-dialog="showUpdateBreedBuyItemDialog" :breedBuyItem="breedBuyItem" @close-dialog="showUpdateBreedBuyItemDialog = false" @update-success="onUpdateBuyItemSuccss" />
 </template>
 
 <script setup lang="ts">import dayjs from 'dayjs'
 import { accountBreedBuyItemList, BreedBuyItem } from 'src/api/account'
 import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
+import updateBreedBuyItem from 'src/components/UpdateBreedBuyItem.vue'
 
 const buyItemListLoading = ref(true)
 
@@ -87,5 +89,35 @@ onMounted(() => {
     pagination: tablePagination.value
   })
 })
+
+const showUpdateBreedBuyItemDialog = ref(false)
+const breedBuyItem = ref<BreedBuyItem>({
+  id: 0,
+  create_at: 0,
+  update_at: 0,
+  cost: 0,
+  count: 0,
+  fee: 0,
+  total_cost: 0
+})
+
+const openUpdateBuyItemDialog = (buyItem: BreedBuyItem) => {
+  breedBuyItem.value = buyItem
+  showUpdateBreedBuyItemDialog.value = true
+}
+
+const onUpdateBuyItemSuccss = (buyItem: BreedBuyItem) => {
+  buyItemList.value.forEach(item => {
+    if (item.id === buyItem.id) {
+      item.id = buyItem.id
+      item.create_at = buyItem.create_at
+      item.update_at = buyItem.update_at
+      item.cost = buyItem.cost
+      item.count = buyItem.count
+      item.fee = buyItem.fee
+      item.total_cost = buyItem.total_cost
+    }
+  })
+}
 
 </script>

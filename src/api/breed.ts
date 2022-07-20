@@ -1,6 +1,7 @@
 import { api } from '../boot/axios'
 import qs from 'qs'
 import { RequestResponse } from './response'
+import { BreedBuyItem } from './account'
 
 export interface AddBreedForm { // 添加品种 form
   code: string; // 代码
@@ -69,4 +70,15 @@ const allBreedList = () => {
   return api.get<RequestResponse<Array<Breed>>>('/breed/allList')
 }
 
-export { addBreed, breedList, editBreed, deleteBreed, editBreedNetValue, allBreedList }
+// 更新品种购买记录
+const updateAddBreedBuyItem = (itemId: number, createAt: number, cost: number, count: number, fee: number) => {
+  return api.put<RequestResponse<BreedBuyItem>>('/breed/updateBuyItem', {
+    id: itemId,
+    create_at: createAt,
+    cost,
+    count,
+    fee
+  })
+}
+
+export { addBreed, breedList, editBreed, deleteBreed, editBreedNetValue, allBreedList, updateAddBreedBuyItem }
